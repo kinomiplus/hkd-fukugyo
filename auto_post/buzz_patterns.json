@@ -1,0 +1,213 @@
+{
+  "patterns": [
+    {
+      "id": "before_after",
+      "name": "ビフォーアフター型",
+      "template": "〇ヶ月前：{before}\n今：{after}\n\nやったこと：{action}だけ",
+      "example": "3ヶ月前：副業月収0円\n今：副業月収4.8万円\n\nやったこと：クラウドワークスで毎日1件応募しただけ",
+      "engagement": "high",
+      "engagement_type": "informational",
+      "tags": ["副業", "実績"]
+    },
+    {
+      "id": "reality_gap",
+      "name": "現実ギャップ型",
+      "template": "みんな知らないけど、{common_belief}は嘘。\n正直に言うと{reality}。\n北海道だからこそ{local_insight}。",
+      "example": "みんな知らないけど、「副業は難しい」は嘘。正直に言うと最初の1万円が一番ハードル高いだけ。北海道だからこそ在宅副業の需要が意外と高い。",
+      "engagement": "high",
+      "engagement_type": "informational",
+      "tags": ["副業", "本音"]
+    },
+    {
+      "id": "number_list",
+      "name": "数字リスト型",
+      "template": "北海道で{goal}するために使ったサービス{n}選\n\n{list}\n\n全部無料で登録できる",
+      "example": "北海道で転職するために使ったサービス3選\n\n①リクルートエージェント\n②doda\n③リクナビNEXT\n\n全部無料で登録できる",
+      "engagement": "high",
+      "engagement_type": "informational",
+      "tags": ["転職", "リスト", "無料"]
+    },
+    {
+      "id": "story_hook",
+      "name": "ストーリーフック型",
+      "template": "正直に告白します。\n\n{honest_admission}。\n\nでも{turning_point}してから{result}になった。",
+      "example": "正直に告白します。\n\n副業を始めて最初の2ヶ月は1円も稼げなかった。\n\nでもある方法を変えてから月3万円になった。",
+      "engagement": "very_high",
+      "engagement_type": "informational",
+      "tags": ["副業", "体験談", "共感"]
+    },
+    {
+      "id": "myth_bust",
+      "name": "常識破壊型",
+      "template": "「{common_advice}」はやめた方がいい。\n\n理由：{reason}。\n\n代わりに{alternative}の方が{benefit}倍速い。",
+      "example": "「とりあえず転職サイトに登録」はやめた方がいい。\n\n理由：求人多すぎて迷うだけ。\n\n代わりに転職エージェント1社に絞る方が3倍速い。",
+      "engagement": "high",
+      "engagement_type": "informational",
+      "tags": ["転職", "アドバイス"]
+    },
+    {
+      "id": "specific_result",
+      "name": "具体的実績型",
+      "template": "{period}で{specific_result}できた方法を公開。\n\n・{step1}\n・{step2}\n・{step3}\n\n全部ぼくが実際にやったこと。",
+      "example": "3ヶ月で副業月5万円できた方法を公開。\n\n・クラウドワークスで毎日1件応募\n・得意な作業に絞る\n・単価交渉を絶対やる\n\n全部ぼくが実際にやったこと。",
+      "engagement": "very_high",
+      "engagement_type": "informational",
+      "tags": ["副業", "実績", "具体的"]
+    },
+    {
+      "id": "warning",
+      "name": "警告型",
+      "template": "北海道で{action}を考えてる人へ。\n\n{warning}だけは気をつけて。\n\nぼくは{mistake}で{loss}を無駄にした。",
+      "example": "北海道で転職を考えてる人へ。\n\n焦って決めることだけは気をつけて。\n\nぼくは最初の転職を急いで年収が逆に下がった。",
+      "engagement": "high",
+      "engagement_type": "informational",
+      "tags": ["転職", "注意", "体験談"]
+    },
+    {
+      "id": "question_answer",
+      "name": "Q&A型",
+      "template": "Q：{question}\n\nA：{answer}\n\n{supporting_detail}",
+      "example": "Q：副業って何から始めればいい？\n\nA：まずクラウドワークスに登録するだけ。\n\n登録5分、最初の仕事獲得まで平均2週間。",
+      "engagement": "medium",
+      "engagement_type": "informational",
+      "tags": ["副業", "初心者", "Q&A"]
+    },
+    {
+      "id": "reply_question",
+      "name": "返信促進型",
+      "template": "{question}\n\nぼくは{my_answer}だった。\n\nあなたはどうですか？コメントで教えてほしい。",
+      "example": "副業を始めたきっかけって何でしたか？\n\nぼくは手取り21万円で将来が不安になったのがきっかけだった。\n\nあなたはどうですか？コメントで教えてほしい。",
+      "engagement": "very_high",
+      "engagement_type": "reply_prompt",
+      "tags": ["共感", "問いかけ", "エンゲージメント"]
+    },
+    {
+      "id": "hokkaido_special",
+      "name": "北海道特化型",
+      "template": "北海道在住だからこそ言える。\n\n{hokkaido_insight}\n\n{national_vs_local}",
+      "example": "北海道在住だからこそ言える。\n\n道外の転職エージェントは北海道求人が全体の3%しかない。\n\n北海道専門エージェントを使うだけで選択肢が4倍になる。",
+      "engagement": "high",
+      "engagement_type": "informational",
+      "tags": ["北海道", "転職", "具体的"]
+    },
+    {
+      "id": "comparison",
+      "name": "比較型",
+      "template": "{option_a}vs{option_b}、どっちがいい？\n\n【{option_a}】{pros_a}\n【{option_b}】{pros_b}\n\nぼくは{recommendation}を選んだ理由→{reason}",
+      "example": "転職エージェントvsスカウト型、どっちがいい？\n\n【エージェント】プロが選んでくれる・書類通過率高い\n【スカウト型】企業側から来る・受け身でOK\n\nぼくはエージェントを選んだ理由→最初の転職は手厚いサポートが必要だから",
+      "engagement": "high",
+      "engagement_type": "informational",
+      "tags": ["転職", "副業", "比較"]
+    },
+    {
+      "id": "quotable",
+      "name": "引用RT型",
+      "template": "「{memorable_statement}」\n\n{supporting_fact}\n\nこれだけ覚えておけばOK。",
+      "example": "「副業の最初の1万円は、技術じゃなく行動量で決まる」\n\n実際、クラウドワークスで50件応募した人の9割は最初の案件を獲れてる。\n\nこれだけ覚えておけばOK。",
+      "engagement": "very_high",
+      "engagement_type": "quotable",
+      "tags": ["副業", "名言", "学び"]
+    },
+    {
+      "id": "step_reveal",
+      "name": "ステップ公開型",
+      "template": "{goal}するための{n}ステップ\n\nStep1：{step1}\nStep2：{step2}\nStep3：{step3}\n\n{timeframe}あればできる。",
+      "example": "転職エージェント登録から内定まで3ステップ\n\nStep1：エージェント2社に同時登録\nStep2：担当者と面談→求人選定\nStep3：書類→面接→内定\n\n早い人は1ヶ月あればできる。",
+      "engagement": "high",
+      "engagement_type": "informational",
+      "tags": ["転職", "副業", "ステップ"]
+    },
+    {
+      "id": "income_reveal",
+      "name": "月収公開型",
+      "template": "【月収公開】副業収入：{amount}円\n\n内訳：\n・{source1}：{amount1}円\n・{source2}：{amount2}円\n\n{timeframe}前は{before}円だった。",
+      "example": "【月収公開】副業収入：68,000円\n\n内訳：\n・Webライター：43,000円\n・アフィリエイト：25,000円\n\n6ヶ月前は0円だった。",
+      "engagement": "very_high",
+      "engagement_type": "informational",
+      "tags": ["副業", "月収", "実績"]
+    },
+    {
+      "id": "local_job_market",
+      "name": "北海道求人事情型",
+      "template": "北海道の{industry}の現実、正直に言う。\n\n・{fact1}\n・{fact2}\n\nだから{recommendation}が正解。",
+      "example": "北海道のIT転職の現実、正直に言う。\n\n・全国比で求人数は約1/8\n・でもリモートOKなら全国応募できる\n\nだから「勤務地条件を外す」が正解。",
+      "engagement": "high",
+      "engagement_type": "informational",
+      "tags": ["北海道", "転職", "求人"]
+    }
+  ],
+  "hooks": [
+    {
+      "id": "honest",
+      "text": "正直に言う。",
+      "style": "本音系"
+    },
+    {
+      "id": "result_first",
+      "text": "結論から言う。",
+      "style": "結論先出し"
+    },
+    {
+      "id": "loss_aversion",
+      "text": "知らないと損する話。",
+      "style": "損失回避"
+    },
+    {
+      "id": "audience_callout",
+      "text": "北海道で副業・転職を考えてる人へ。",
+      "style": "オーディエンス呼びかけ"
+    },
+    {
+      "id": "awareness_gap",
+      "text": "みんな気づいてないけど、",
+      "style": "気づきギャップ"
+    },
+    {
+      "id": "time_investment",
+      "text": "3年かかってやっとわかったこと。",
+      "style": "時間投資・権威"
+    },
+    {
+      "id": "question",
+      "text": "ちょっと聞いてもいい？",
+      "style": "問いかけフック"
+    },
+    {
+      "id": "local_identity",
+      "text": "北海道在住のぼくが正直に言う。",
+      "style": "ローカルアイデンティティ"
+    },
+    {
+      "id": "vulnerability",
+      "text": "ぼくの失敗談を話す。",
+      "style": "脆弱性・共感"
+    },
+    {
+      "id": "sudden_engagement",
+      "text": "突然だけど質問。",
+      "style": "突然の問いかけ"
+    },
+    {
+      "id": "cta_first",
+      "text": "今日から1つだけ変えてみてほしいこと。",
+      "style": "行動促進"
+    },
+    {
+      "id": "credibility",
+      "text": "副業で月5万稼いでわかったこと。",
+      "style": "実績による信頼"
+    }
+  ],
+  "buzz_keywords": [
+    "正直に言うと",
+    "実際にやってみた",
+    "北海道在住だからこそわかる",
+    "これは本当におすすめ",
+    "月収公開",
+    "全部無料",
+    "3ヶ月で",
+    "初心者でも",
+    "スキルなし",
+    "会社員しながら"
+  ]
+}

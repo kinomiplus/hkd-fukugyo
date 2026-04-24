@@ -1,0 +1,156 @@
+2026-04-20 07:00:01,939 [INFO] === X自動投稿 開始 (時間帯: 07時) ===
+2026-04-20 07:00:06,633 [WARNING] Googleトレンド取得失敗: The request failed: Google returned a response with code 404
+2026-04-20 07:00:10,595 [INFO] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-20 07:00:10,632 [INFO] 投稿生成完了: hook=honest, engagement_type=reply_prompt, time=07
+2026-04-20 07:00:10,633 [INFO] テーマ: 副業初心者が最初にやるべきこと
+2026-04-20 07:00:10,633 [INFO] ハッシュタグ: #副業 #副業初心者 #副業で稼ぐ #副業おすすめ
+2026-04-20 07:00:10,633 [INFO] 文字数: 139文字
+2026-04-20 07:00:10,633 [INFO] 内容:
+正直に言う。副業を始めた最初の1ヶ月、ぼくは何もできなかった。
+
+理由はシンプル。「何から始めるか」で悩みすぎたから。
+
+今なら断言できる。最初にやることは1つだけ。クラウドワークスに登録して、1件応募する。それだけ🔥
+
+あ…
+#副業 #副業初心者 #副業で稼ぐ #副業おすすめ
+2026-04-20 07:00:11,306 [INFO] Slack通知送信成功
+2026-04-20 07:00:11,672 [ERROR] 予期しないエラー (試行 1/3): 402 Payment Required
+Your enrolled account [2044403557101948928] does not have any credits to fulfill this request.
+2026-04-20 07:00:21,988 [ERROR] 予期しないエラー (試行 2/3): 402 Payment Required
+Your enrolled account [2044403557101948928] does not have any credits to fulfill this request.
+2026-04-20 07:00:32,285 [ERROR] 予期しないエラー (試行 3/3): 402 Payment Required
+Your enrolled account [2044403557101948928] does not have any credits to fulfill this request.
+2026-04-20 07:00:32,285 [ERROR] 投稿失敗: 3回試行しましたが全て失敗しました。
+2026-04-20 07:00:32,287 [ERROR] 投稿に失敗しました。
+2026-04-20 07:00:32,541 [INFO] Slack通知送信成功
+2026-04-20 10:00:00,919 [INFO] === X自動投稿 開始 (時間帯: 10時) ===
+2026-04-20 10:01:26,230 [WARNING] Googleトレンド取得失敗: The request failed: Google returned a response with code 404
+2026-04-20 10:01:36,100 [INFO] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-20 10:01:36,138 [INFO] 投稿生成完了: hook=honest, engagement_type=reply_prompt, time=10
+2026-04-20 10:01:36,139 [INFO] テーマ: スキルなしでできる副業3選
+2026-04-20 10:01:36,139 [INFO] ハッシュタグ: #北海道 #北海道転職 #北海道副業 #北海道在住
+2026-04-20 10:01:36,139 [INFO] 文字数: 139文字
+2026-04-20 10:01:36,139 [INFO] 内容:
+正直に言う。
+
+副業を始めた頃、ぼくにはスキルが何もなかった。
+
+それでも北海道在住のまま月5万円を稼げた方法は3つ。
+
+①データ入力（初月2万円）
+②アンケートモニター（スキマ時間で月5,000円）
+③ポイントサイト（月3…
+#北海道 #北海道転職 #北海道副業 #北海道在住
+2026-04-20 10:01:36,720 [INFO] Slack通知送信成功
+2026-04-20 10:01:37,111 [ERROR] 予期しないエラー (試行 1/3): 402 Payment Required
+Your enrolled account [2044403557101948928] does not have any credits to fulfill this request.
+2026-04-20 10:01:47,307 [ERROR] 予期しないエラー (試行 2/3): 402 Payment Required
+Your enrolled account [2044403557101948928] does not have any credits to fulfill this request.
+2026-04-20 10:01:57,516 [ERROR] 予期しないエラー (試行 3/3): 402 Payment Required
+Your enrolled account [2044403557101948928] does not have any credits to fulfill this request.
+2026-04-20 10:01:57,518 [ERROR] 投稿失敗: 3回試行しましたが全て失敗しました。
+2026-04-20 10:01:57,521 [ERROR] 投稿に失敗しました。
+2026-04-20 10:01:57,774 [INFO] Slack通知送信成功
+2026-04-20 12:00:01,631 [INFO] === X自動投稿 開始 (時間帯: 12時) ===
+2026-04-20 12:00:06,398 [WARNING] Googleトレンド取得失敗: The request failed: Google returned a response with code 404
+2026-04-20 12:00:12,099 [INFO] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-20 12:00:12,134 [INFO] 投稿生成完了: hook=honest, engagement_type=reply_prompt, time=12
+2026-04-20 12:00:12,134 [INFO] テーマ: スキルなしでできる副業3選
+2026-04-20 12:00:12,134 [INFO] ハッシュタグ: #副業 #副業初心者 #副業で稼ぐ #副業おすすめ
+2026-04-20 12:00:12,134 [INFO] 文字数: 139文字
+2026-04-20 12:00:12,135 [INFO] 内容:
+正直に言う。ぼくが副業を始めたとき、スキルは何もなかった🙅
+
+それでも最初の月に1.2万円稼げた方法がこれ👇
+
+・メルカリで不用品を売る
+・クラウドワークスでアンケート案件に答える
+・Googleマップの口コミ投稿（評価サー…
+#副業 #副業初心者 #副業で稼ぐ #副業おすすめ
+2026-04-20 12:00:12,570 [INFO] Slack通知送信成功
+2026-04-20 12:00:12,971 [ERROR] 予期しないエラー (試行 1/3): 402 Payment Required
+Your enrolled account [2044403557101948928] does not have any credits to fulfill this request.
+2026-04-20 12:00:23,244 [ERROR] 予期しないエラー (試行 2/3): 402 Payment Required
+Your enrolled account [2044403557101948928] does not have any credits to fulfill this request.
+2026-04-20 12:00:33,538 [ERROR] 予期しないエラー (試行 3/3): 402 Payment Required
+Your enrolled account [2044403557101948928] does not have any credits to fulfill this request.
+2026-04-20 12:00:33,539 [ERROR] 投稿失敗: 3回試行しましたが全て失敗しました。
+2026-04-20 12:00:33,541 [ERROR] 投稿に失敗しました。
+2026-04-20 12:00:33,874 [INFO] Slack通知送信成功
+2026-04-20 17:00:01,649 [INFO] === X自動投稿 開始 (時間帯: 17時) ===
+2026-04-20 17:00:09,707 [WARNING] Googleトレンド取得失敗: The request failed: Google returned a response with code 404
+2026-04-20 17:00:15,232 [INFO] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-20 17:00:15,271 [INFO] 投稿生成完了: hook=honest, engagement_type=reply_prompt, time=17
+2026-04-20 17:00:15,271 [INFO] テーマ: 北海道の給料が低い理由と解決策
+2026-04-20 17:00:15,271 [INFO] ハッシュタグ: #北海道 #北海道転職 #北海道副業 #北海道在住
+2026-04-20 17:00:15,272 [INFO] 文字数: 139文字
+2026-04-20 17:00:15,272 [INFO] 内容:
+正直に言う。
+
+北海道の会社員やってると「なんで同じ仕事なのに本州より給料低いんだ」って思うよね😔
+
+ぼくも手取り19万円で毎月カツカツだった。
+
+でも副業を始めて3ヶ月後に月4万円の収入が増えた。転職でさらに年収100万円…
+#北海道 #北海道転職 #北海道副業 #北海道在住
+2026-04-20 17:00:15,677 [INFO] Slack通知送信成功
+2026-04-20 17:00:16,035 [ERROR] 予期しないエラー (試行 1/3): 402 Payment Required
+Your enrolled account [2044403557101948928] does not have any credits to fulfill this request.
+2026-04-20 17:00:26,195 [ERROR] 予期しないエラー (試行 2/3): 402 Payment Required
+Your enrolled account [2044403557101948928] does not have any credits to fulfill this request.
+2026-04-20 17:00:36,504 [ERROR] 予期しないエラー (試行 3/3): 402 Payment Required
+Your enrolled account [2044403557101948928] does not have any credits to fulfill this request.
+2026-04-20 17:00:36,504 [ERROR] 投稿失敗: 3回試行しましたが全て失敗しました。
+2026-04-20 17:00:36,507 [ERROR] 投稿に失敗しました。
+2026-04-20 17:00:36,761 [INFO] Slack通知送信成功
+2026-04-20 20:00:01,980 [INFO] === X自動投稿 開始 (時間帯: 20時) ===
+2026-04-20 20:00:06,152 [WARNING] Googleトレンド取得失敗: The request failed: Google returned a response with code 404
+2026-04-20 20:00:11,311 [INFO] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-20 20:00:11,347 [INFO] 投稿生成完了: hook=honest, engagement_type=reply_prompt, time=20
+2026-04-20 20:00:11,348 [INFO] テーマ: 副業初心者が最初にやるべきこと
+2026-04-20 20:00:11,348 [INFO] ハッシュタグ: #副業 #副業初心者 #副業で稼ぐ #副業おすすめ
+2026-04-20 20:00:11,348 [INFO] 文字数: 139文字
+2026-04-20 20:00:11,348 [INFO] 内容:
+正直に言う。副業を始めるとき、ぼくは最初の1ヶ月を完全に無駄にした🫠
+
+やること多すぎて何も進まなかった。でも「まず1つだけ登録する」に絞ったら動けた。
+
+クラウドワークスに登録→プロフィール記入→1件応募。これだけで十分。…
+#副業 #副業初心者 #副業で稼ぐ #副業おすすめ
+2026-04-20 20:00:11,783 [INFO] Slack通知送信成功
+2026-04-20 20:00:12,132 [ERROR] 予期しないエラー (試行 1/3): 402 Payment Required
+Your enrolled account [2044403557101948928] does not have any credits to fulfill this request.
+2026-04-20 20:00:22,799 [ERROR] 予期しないエラー (試行 2/3): 402 Payment Required
+Your enrolled account [2044403557101948928] does not have any credits to fulfill this request.
+2026-04-20 20:00:33,141 [ERROR] 予期しないエラー (試行 3/3): 402 Payment Required
+Your enrolled account [2044403557101948928] does not have any credits to fulfill this request.
+2026-04-20 20:00:33,141 [ERROR] 投稿失敗: 3回試行しましたが全て失敗しました。
+2026-04-20 20:00:33,143 [ERROR] 投稿に失敗しました。
+2026-04-20 20:00:33,387 [INFO] Slack通知送信成功
+2026-04-20 22:00:01,563 [INFO] === X自動投稿 開始 (時間帯: 22時) ===
+2026-04-20 22:00:06,273 [WARNING] Googleトレンド取得失敗: The request failed: Google returned a response with code 404
+2026-04-20 22:00:10,561 [INFO] HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-20 22:00:10,597 [INFO] 投稿生成完了: hook=honest, engagement_type=reply_prompt, time=22
+2026-04-20 22:00:10,597 [INFO] テーマ: 副業初心者が最初にやるべきこと
+2026-04-20 22:00:10,597 [INFO] ハッシュタグ: #副業 #副業初心者 #副業で稼ぐ #副業おすすめ
+2026-04-20 22:00:10,597 [INFO] 文字数: 139文字
+2026-04-20 22:00:10,598 [INFO] 内容:
+正直に言う。
+
+副業を始めた最初の1ヶ月、ぼくは何もできなかった。「どれが自分に合うか」考えすぎて動けなかったから。
+
+でも「まず1つだけ登録する」と決めたら動けた🙌
+
+今夜5分だけ時間をとって、気になる副業を1つ調べてみて…
+#副業 #副業初心者 #副業で稼ぐ #副業おすすめ
+2026-04-20 22:00:10,964 [INFO] Slack通知送信成功
+2026-04-20 22:00:11,511 [ERROR] 予期しないエラー (試行 1/3): 402 Payment Required
+Your enrolled account [2044403557101948928] does not have any credits to fulfill this request.
+2026-04-20 22:00:22,105 [ERROR] 予期しないエラー (試行 2/3): 402 Payment Required
+Your enrolled account [2044403557101948928] does not have any credits to fulfill this request.
+2026-04-20 22:00:32,468 [ERROR] 予期しないエラー (試行 3/3): 402 Payment Required
+Your enrolled account [2044403557101948928] does not have any credits to fulfill this request.
+2026-04-20 22:00:32,468 [ERROR] 投稿失敗: 3回試行しましたが全て失敗しました。
+2026-04-20 22:00:32,470 [ERROR] 投稿に失敗しました。
+2026-04-20 22:00:33,085 [INFO] Slack通知送信成功
