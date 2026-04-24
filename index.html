@@ -17,496 +17,1022 @@
   </script>
 
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
-      --green: #2E7D32;
-      --green-light: #4CAF50;
-      --green-dark: #1B5E20;
-      --green-bg: #F1F8E9;
-      --text: #212121;
-      --text-sub: #555;
-      --border: #E0E0E0;
-      --white: #FFFFFF;
+      --green-dark:   #1B5E20;
+      --green-main:   #2E7D32;
+      --green-mid:    #388E3C;
+      --green-light:  #E8F5E9;
+      --green-accent: #43A047;
+      --text-dark:    #1A1A1A;
+      --text-body:    #333333;
+      --text-muted:   #666666;
+      --border:       #E0E0E0;
+      --white:        #FFFFFF;
+      --shadow-sm:    0 2px 8px rgba(0,0,0,0.08);
+      --shadow-md:    0 4px 20px rgba(0,0,0,0.10);
+      --shadow-lg:    0 8px 40px rgba(0,0,0,0.12);
+      --radius:       12px;
+      --radius-lg:    20px;
     }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
-      color: var(--text);
+      font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', sans-serif;
+      color: var(--text-body);
       background: var(--white);
       line-height: 1.7;
-      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
     }
 
-    a { color: var(--green); text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
 
-    img { max-width: 100%; height: auto; }
-
-    /* ── Header ── */
-    header {
-      background: var(--green);
-      padding: 16px 20px;
+    /* ========== HEADER ========== */
+    .header {
       position: sticky;
       top: 0;
       z-index: 100;
-      box-shadow: 0 2px 8px rgba(0,0,0,.15);
+      background: var(--white);
+      border-bottom: 2px solid var(--green-main);
+      box-shadow: var(--shadow-sm);
     }
-    header .inner {
-      max-width: 960px;
+
+    .header-inner {
+      max-width: 1100px;
       margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
     }
-    header h1 {
-      font-size: 1.25rem;
-      color: var(--white);
-      font-weight: 700;
-      letter-spacing: .04em;
-    }
-    header nav a {
-      color: rgba(255,255,255,.9);
-      font-size: .875rem;
-      margin-left: 20px;
-    }
-    header nav a:hover { color: var(--white); text-decoration: none; opacity: .8; }
 
-    /* ── Hero ── */
-    .hero {
-      background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
-      color: var(--white);
-      text-align: center;
-      padding: 80px 20px 72px;
-    }
-    .hero .tag {
-      display: inline-block;
-      background: rgba(255,255,255,.2);
-      border: 1px solid rgba(255,255,255,.4);
-      color: var(--white);
-      font-size: .8rem;
-      padding: 4px 14px;
-      border-radius: 20px;
-      margin-bottom: 20px;
-      letter-spacing: .06em;
-    }
-    .hero h2 {
-      font-size: clamp(1.5rem, 4vw, 2.4rem);
+    .header-logo {
+      font-size: 1.2rem;
       font-weight: 800;
-      line-height: 1.4;
-      margin-bottom: 18px;
-    }
-    .hero p {
-      font-size: clamp(.95rem, 2.5vw, 1.1rem);
-      opacity: .92;
-      max-width: 560px;
-      margin: 0 auto 32px;
-    }
-    .btn-hero {
-      display: inline-block;
-      background: var(--white);
-      color: var(--green);
-      font-weight: 700;
-      font-size: 1rem;
-      padding: 14px 40px;
-      border-radius: 50px;
-      box-shadow: 0 4px 16px rgba(0,0,0,.15);
-      transition: transform .2s, box-shadow .2s;
-    }
-    .btn-hero:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.2); text-decoration: none; }
-
-    /* ── Section common ── */
-    section { padding: 64px 20px; }
-    .container { max-width: 960px; margin: 0 auto; }
-    .section-title {
-      text-align: center;
-      font-size: clamp(1.3rem, 3vw, 1.75rem);
-      font-weight: 800;
-      color: var(--green-dark);
-      margin-bottom: 8px;
-    }
-    .section-title span { color: var(--green); }
-    .section-sub {
-      text-align: center;
-      color: var(--text-sub);
-      font-size: .95rem;
-      margin-bottom: 40px;
-    }
-    .divider {
-      width: 48px;
-      height: 4px;
-      background: var(--green);
-      border-radius: 2px;
-      margin: 12px auto 36px;
-    }
-
-    /* ── 悩みセクション ── */
-    .worries { background: #FAFAFA; }
-    .worry-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 16px;
-    }
-    .worry-card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--green);
-      border-radius: 8px;
-      padding: 20px 20px 20px 24px;
+      color: var(--green-main);
+      letter-spacing: 0.02em;
       display: flex;
-      align-items: flex-start;
-      gap: 12px;
+      align-items: center;
+      gap: 8px;
     }
-    .worry-card .icon { font-size: 1.5rem; flex-shrink: 0; }
-    .worry-card p { font-size: .95rem; color: var(--text); }
 
-    /* ── 解決策セクション ── */
-    .solutions { background: var(--green-bg); }
-    .solution-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
+    .header-logo span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green-accent);
     }
-    .solution-card {
-      background: var(--white);
-      border-radius: 12px;
-      padding: 28px 24px;
-      box-shadow: 0 2px 12px rgba(0,0,0,.06);
-      text-align: center;
+
+    .header-nav {
+      display: flex;
+      gap: 28px;
+      list-style: none;
     }
-    .solution-card .num {
+
+    .header-nav a {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-body);
+      transition: color 0.2s;
+    }
+
+    .header-nav a:hover { color: var(--green-main); }
+
+    .header-cta {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      width: 42px;
-      height: 42px;
-      background: var(--green);
+      gap: 6px;
+      background: var(--green-main);
       color: var(--white);
+      font-size: 0.8rem;
       font-weight: 700;
-      font-size: 1.1rem;
-      border-radius: 50%;
-      margin-bottom: 14px;
+      padding: 8px 18px;
+      border-radius: 50px;
+      transition: background 0.2s, transform 0.15s;
     }
-    .solution-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: var(--green-dark); }
-    .solution-card p { font-size: .9rem; color: var(--text-sub); }
 
-    /* ── サービスカード共通 ── */
-    .services-section { background: var(--white); }
-    .services-alt { background: #FAFAFA; }
-    .service-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
+    .header-cta:hover {
+      background: var(--green-dark);
+      transform: translateY(-1px);
     }
-    .service-card {
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px 24px;
-      background: var(--white);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      transition: box-shadow .2s;
+
+    /* ========== HERO ========== */
+    .hero {
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-main) 50%, var(--green-mid) 100%);
+      color: var(--white);
+      padding: 100px 24px 90px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
     }
-    .service-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,.1); }
-    .service-badge {
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .hero-inner {
+      position: relative;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
       display: inline-block;
-      font-size: .72rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      padding: 3px 10px;
-      border-radius: 4px;
-      background: var(--green-bg);
-      color: var(--green-dark);
-      width: fit-content;
-    }
-    .service-card h3 { font-size: 1.05rem; font-weight: 700; color: var(--text); }
-    .service-card .desc { font-size: .9rem; color: var(--text-sub); flex: 1; }
-    .service-card .point {
-      font-size: .85rem;
-      color: var(--green-dark);
-      background: var(--green-bg);
-      padding: 6px 12px;
-      border-radius: 6px;
-    }
-    .service-card .point::before { content: "✅ "; }
-    .btn-service {
-      display: block;
-      text-align: center;
-      background: var(--green);
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
       color: var(--white);
+      font-size: 0.78rem;
       font-weight: 700;
-      font-size: .95rem;
-      padding: 12px;
-      border-radius: 8px;
-      margin-top: 6px;
-      transition: background .2s, transform .2s;
+      padding: 5px 14px;
+      border-radius: 50px;
+      margin-bottom: 24px;
+      letter-spacing: 0.05em;
     }
-    .btn-service:hover { background: var(--green-dark); transform: translateY(-1px); text-decoration: none; }
 
-    /* ── CTA ── */
-    .cta-section {
-      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green) 100%);
-      text-align: center;
-      color: var(--white);
-      padding: 72px 20px;
+    .hero-title {
+      font-size: clamp(1.75rem, 4vw, 2.75rem);
+      font-weight: 900;
+      line-height: 1.35;
+      margin-bottom: 20px;
+      letter-spacing: -0.01em;
     }
-    .cta-section h2 {
-      font-size: clamp(1.3rem, 3.5vw, 2rem);
+
+    .hero-title em {
+      font-style: normal;
+      color: #A5D6A7;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.15rem);
+      opacity: 0.9;
+      margin-bottom: 36px;
+      line-height: 1.8;
+    }
+
+    .hero-btns {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--white);
+      color: var(--green-main);
+      font-size: 1rem;
       font-weight: 800;
+      padding: 16px 36px;
+      border-radius: 50px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--white);
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 15px 32px;
+      border-radius: 50px;
+      border: 2px solid rgba(255,255,255,0.6);
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: var(--white);
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 32px;
+      margin-top: 56px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .hero-stat {
+      text-align: center;
+    }
+
+    .hero-stat-num {
+      font-size: 2rem;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .hero-stat-label {
+      font-size: 0.8rem;
+      opacity: 0.8;
+      margin-top: 4px;
+    }
+
+    /* ========== SECTION COMMON ========== */
+    section {
+      padding: 80px 24px;
+    }
+
+    .section-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-tag {
+      display: inline-block;
+      background: var(--green-light);
+      color: var(--green-main);
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 5px 14px;
+      border-radius: 50px;
+      margin-bottom: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    .section-title {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 900;
+      color: var(--text-dark);
+      line-height: 1.35;
+      margin-bottom: 16px;
+    }
+
+    .section-desc {
+      font-size: 1rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      line-height: 1.8;
+    }
+
+    .section-header {
+      margin-bottom: 48px;
+    }
+
+    /* ========== PROBLEMS ========== */
+    .problems {
+      background: #FAFAFA;
+    }
+
+    .problems-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .problem-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .problem-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .problem-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--green-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .problem-text {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      line-height: 1.5;
+    }
+
+    .problem-sub {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-weight: 400;
+    }
+
+    /* ========== SOLUTIONS ========== */
+    .solutions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 28px;
+    }
+
+    .solution-card {
+      border-radius: var(--radius-lg);
+      padding: 36px 28px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .solution-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
+    }
+
+    .solution-num {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--green-main);
+      letter-spacing: 0.1em;
       margin-bottom: 12px;
     }
-    .cta-section p {
-      font-size: .95rem;
-      opacity: .9;
-      margin-bottom: 32px;
-      max-width: 480px;
+
+    .solution-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .solution-body {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    .solution-icon {
+      font-size: 2.2rem;
+      margin-bottom: 16px;
+    }
+
+    /* ========== SERVICE SECTIONS ========== */
+    .services-transfer { background: #FAFAFA; }
+    .services-side { background: var(--white); }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .service-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.25s, transform 0.25s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .service-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+    }
+
+    .service-badge {
+      display: inline-block;
+      background: var(--green-light);
+      color: var(--green-main);
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 50px;
+      margin-bottom: 14px;
+      letter-spacing: 0.05em;
+    }
+
+    .service-name {
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--text-dark);
+      margin-bottom: 10px;
+    }
+
+    .service-desc {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      flex: 1;
+      margin-bottom: 20px;
+    }
+
+    .service-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+
+    .service-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 50px;
+      background: #F5F5F5;
+      color: var(--text-muted);
+    }
+
+    .service-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: var(--green-main);
+      color: var(--white);
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 13px 20px;
+      border-radius: 50px;
+      transition: background 0.2s, transform 0.15s;
+      text-align: center;
+    }
+
+    .service-btn:hover {
+      background: var(--green-dark);
+      transform: translateY(-1px);
+    }
+
+    /* ========== CTA ========== */
+    .cta {
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-main) 100%);
+      color: var(--white);
+      padding: 100px 24px;
+      text-align: center;
+    }
+
+    .cta-title {
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 900;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    .cta-sub {
+      font-size: 1rem;
+      opacity: 0.85;
+      margin-bottom: 40px;
+      line-height: 1.8;
+      max-width: 560px;
       margin-left: auto;
       margin-right: auto;
     }
-    .cta-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
-    .btn-cta {
-      display: inline-block;
-      font-weight: 700;
-      font-size: 1rem;
-      padding: 14px 36px;
-      border-radius: 50px;
-      transition: transform .2s, box-shadow .2s;
-    }
-    .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.25); text-decoration: none; }
-    .btn-cta-white { background: var(--white); color: var(--green); }
-    .btn-cta-outline { background: transparent; color: var(--white); border: 2px solid var(--white); }
 
-    /* ── Footer ── */
-    footer {
-      background: var(--text);
-      color: #CCC;
-      text-align: center;
-      padding: 40px 20px;
+    .cta-btns {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
     }
-    footer .logo { font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 16px; }
-    footer .links { display: flex; justify-content: center; gap: 24px; margin-bottom: 20px; flex-wrap: wrap; }
-    footer .links a {
-      color: #CCC;
-      font-size: .9rem;
+
+    .cta-btn-main {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--white);
+      color: var(--green-main);
+      font-size: 1.05rem;
+      font-weight: 800;
+      padding: 18px 42px;
+      border-radius: 50px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .cta-btn-main:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.28);
+    }
+
+    .cta-btn-sub {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--white);
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 17px 36px;
+      border-radius: 50px;
+      border: 2px solid rgba(255,255,255,0.5);
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .cta-btn-sub:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: var(--white);
+    }
+
+    /* ========== FOOTER ========== */
+    .footer {
+      background: var(--text-dark);
+      color: rgba(255,255,255,0.7);
+      padding: 60px 24px 32px;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .footer-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 40px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 32px;
+    }
+
+    .footer-brand {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .footer-logo {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+
+    .footer-tagline {
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 48px;
+    }
+
+    .footer-col h4 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-col a {
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.6);
+      transition: color 0.2s;
+    }
+
+    .footer-col a:hover { color: var(--white); }
+
+    .footer-social {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .social-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
       display: flex;
       align-items: center;
-      gap: 6px;
+      justify-content: center;
+      color: rgba(255,255,255,0.7);
+      font-size: 1rem;
+      font-weight: 700;
+      transition: background 0.2s, color 0.2s;
+      border: 1px solid rgba(255,255,255,0.1);
     }
-    footer .links a:hover { color: var(--white); text-decoration: none; }
-    .sns-icon {
-      width: 20px;
-      height: 20px;
-      display: inline-block;
-      vertical-align: middle;
-    }
-    footer .copy { font-size: .8rem; color: #888; }
 
-    /* ── Responsive ── */
-    @media (max-width: 640px) {
-      header h1 { font-size: 1.05rem; }
-      header nav { display: none; }
-      .hero { padding: 56px 20px 48px; }
-      section { padding: 48px 16px; }
-      .service-grid { grid-template-columns: 1fr; }
-      .worry-grid { grid-template-columns: 1fr; }
-      .solution-grid { grid-template-columns: 1fr; }
+    .social-btn:hover {
+      background: var(--green-main);
+      color: var(--white);
+      border-color: var(--green-main);
+    }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .footer-legal {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+    }
+
+    .footer-legal a {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.4);
+      transition: color 0.2s;
+    }
+
+    .footer-legal a:hover { color: rgba(255,255,255,0.8); }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 768px) {
+      section { padding: 60px 20px; }
+
+      .header-nav { display: none; }
+      .header-cta { font-size: 0.75rem; padding: 7px 14px; }
+
+      .hero { padding: 72px 20px 64px; }
+
+      .hero-stats {
+        gap: 24px;
+        flex-direction: row;
+        justify-content: space-around;
+      }
+
+      .hero-stat-num { font-size: 1.6rem; }
+
+      .problems-grid { grid-template-columns: 1fr; }
+      .solutions-grid { grid-template-columns: 1fr; }
+      .services-grid { grid-template-columns: 1fr; }
+
+      .cta { padding: 72px 20px; }
+
+      .footer-top {
+        flex-direction: column;
+        gap: 32px;
+      }
+
+      .footer-links { gap: 32px; }
+
+      .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-btns { flex-direction: column; align-items: center; }
+      .cta-btns { flex-direction: column; align-items: center; }
+      .btn-primary, .btn-outline, .cta-btn-main, .cta-btn-sub {
+        width: 100%;
+        max-width: 320px;
+        justify-content: center;
+      }
     }
   </style>
 </head>
 <body>
 
-<!-- ① ヘッダー -->
-<header>
-  <div class="inner">
-    <h1>北海道副業ナビ</h1>
-    <nav>
-      <a href="#worries">こんな悩み</a>
-      <a href="#solutions">わかること</a>
-      <a href="#transfer">転職</a>
-      <a href="#side">副業</a>
-    </nav>
-  </div>
-</header>
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="header-logo">
+        <span></span>北海道副業ナビ
+      </a>
+      <nav>
+        <ul class="header-nav">
+          <li><a href="#problems">お悩み</a></li>
+          <li><a href="#solutions">このサイトでわかること</a></li>
+          <li><a href="#transfer">転職サービス</a></li>
+          <li><a href="#side">副業サービス</a></li>
+        </ul>
+      </nav>
+      <a href="#cta" class="header-cta">無料で見てみる →</a>
+    </div>
+  </header>
 
-<!-- ② キャッチコピー -->
-<section class="hero">
-  <div class="tag">北海道在住者向け・副業＆転職メディア</div>
-  <h2>北海道で副業・転職を<br>考えているあなたへ</h2>
-  <p>給料に不満がある。でも何から始めればいいかわからない。<br>北海道在住のぼくが、リアルな体験談をもとに具体的な情報をお届けします。</p>
-  <a href="#solutions" class="btn-hero">まず読みたい記事を見る</a>
-</section>
-
-<!-- ③ 悩みセクション -->
-<section class="worries" id="worries">
-  <div class="container">
-    <h2 class="section-title"><span>こんな悩み</span>ありませんか？</h2>
-    <div class="divider"></div>
-    <div class="worry-grid">
-      <div class="worry-card">
-        <span class="icon">😔</span>
-        <p>北海道は給料が低くて、このままでは生活が苦しい</p>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <span class="hero-badge">北海道在住者に特化した情報メディア</span>
+      <h1 class="hero-title">
+        北海道で副業・転職を<br>
+        考えている<em>あなた</em>へ
+      </h1>
+      <p class="hero-sub">
+        給料が上がらない。副業って何から始めればいい？<br>
+        転職したいけど北海道は求人が少ない。<br>
+        そんなリアルな悩みに、リアルな体験談で答えます。
+      </p>
+      <div class="hero-btns">
+        <a href="#transfer" class="btn-primary">おすすめ転職サービスを見る</a>
+        <a href="#side" class="btn-outline">副業サービスを見る</a>
       </div>
-      <div class="worry-card">
-        <span class="icon">🤔</span>
-        <p>副業を始めたいけど、何から手をつければいいかわからない</p>
-      </div>
-      <div class="worry-card">
-        <span class="icon">😰</span>
-        <p>転職を考えているが、北海道で良い求人があるか不安</p>
-      </div>
-      <div class="worry-card">
-        <span class="icon">😓</span>
-        <p>副業詐欺が怖くて、信頼できるサービスを見分けられない</p>
-      </div>
-      <div class="worry-card">
-        <span class="icon">💭</span>
-        <p>会社にバレずに副業できるのか、リスクが心配</p>
-      </div>
-      <div class="worry-card">
-        <span class="icon">⏰</span>
-        <p>本業が忙しくて、副業に使える時間が限られている</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num">6つ</div>
+          <div class="hero-stat-label">厳選サービス掲載</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">無料</div>
+          <div class="hero-stat-label">すべて登録無料</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">在宅OK</div>
+          <div class="hero-stat-label">リモート対応多数</div>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ④ 解決策セクション -->
-<section class="solutions" id="solutions">
-  <div class="container">
-    <h2 class="section-title">このサイトで<span>わかること</span></h2>
-    <p class="section-sub">北海道在住のぼくが実際に試した情報だけを発信しています</p>
-    <div class="divider"></div>
-    <div class="solution-grid">
-      <div class="solution-card">
-        <div class="num">1</div>
-        <h3>北海道で使える副業の始め方</h3>
-        <p>リモートでできる副業から北海道の地域特性を活かした案件まで、月5万円を目指す具体的ロードマップ。</p>
+  <!-- PROBLEMS -->
+  <section class="problems" id="problems">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-tag">PROBLEMS</span>
+        <h2 class="section-title">こんな悩みありませんか？</h2>
+        <p class="section-desc">北海道在住の20〜35歳の会社員が抱える、リアルな悩みです。ひとつでも当てはまるなら、このサイトが役に立ちます。</p>
       </div>
-      <div class="solution-card">
-        <div class="num">2</div>
-        <h3>転職で年収を上げる方法</h3>
-        <p>北海道求人に強いエージェントの使い方と、年収交渉で損しないための交渉術を解説。</p>
-      </div>
-      <div class="solution-card">
-        <div class="num">3</div>
-        <h3>信頼できるサービスの見分け方</h3>
-        <p>実際に登録・利用したサービスのみをレビュー。怪しいサービスに引っかからない判断基準も紹介。</p>
+      <div class="problems-grid">
+        <div class="problem-card">
+          <div class="problem-icon">💴</div>
+          <div>
+            <div class="problem-text">給料がぜんぜん上がらない</div>
+            <div class="problem-sub">北海道の平均年収は全国最下位水準。頑張っても報われない感覚がある。</div>
+          </div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">🤔</div>
+          <div>
+            <div class="problem-text">副業って何から始めればいい？</div>
+            <div class="problem-sub">情報が多すぎて何が正しいかわからない。詐欺も怖い。</div>
+          </div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">🗾</div>
+          <div>
+            <div class="problem-text">転職したいけど北海道は求人が少ない</div>
+            <div class="problem-sub">大手の求人サイトを見ても北海道の案件が少なく、選択肢が狭い。</div>
+          </div>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">🏠</div>
+          <div>
+            <div class="problem-text">在宅でできる仕事があるか知らない</div>
+            <div class="problem-sub">北海道にいながら在宅・リモートで稼ぐ方法を知りたい。</div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ⑤ おすすめ転職サービス -->
-<section class="services-section" id="transfer">
-  <div class="container">
-    <h2 class="section-title">おすすめ<span>転職サービス</span> 3選</h2>
-    <p class="section-sub">北海道の求人に強く、ぼくが実際に使ったサービスだけ掲載しています</p>
-    <div class="divider"></div>
-    <div class="service-grid">
-
-      <div class="service-card">
-        <span class="service-badge">求人数 No.1</span>
-        <h3>リクルートエージェント</h3>
-        <p class="desc">国内最大規模の非公開求人を保有。北海道の求人数も業界トップクラスで、専任アドバイザーが無料でサポートしてくれる。</p>
-        <p class="point">北海道の非公開求人が多数</p>
-        <p class="point">転職支援実績 No.1</p>
-        <a href="AFFILIATE_URL_RECRUIT_AGENT" class="btn-service" rel="noopener noreferrer" target="_blank">無料で登録する →</a>
+  <!-- SOLUTIONS -->
+  <section id="solutions">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-tag">SOLUTIONS</span>
+        <h2 class="section-title">このサイトでわかること</h2>
+        <p class="section-desc">北海道在住のぼく自身が試して、効果があったものだけを厳選して紹介しています。</p>
       </div>
-
-      <div class="service-card">
-        <span class="service-badge">使いやすさ◎</span>
-        <h3>doda</h3>
-        <p class="desc">求人サイトとエージェントが一体化した使いやすいサービス。自分のペースで転職活動を進められるのが特徴。</p>
-        <p class="point">スカウト機能で企業から声がかかる</p>
-        <p class="point">転職フェアも北海道で開催</p>
-        <a href="AFFILIATE_URL_DODA" class="btn-service" rel="noopener noreferrer" target="_blank">無料で登録する →</a>
+      <div class="solutions-grid">
+        <div class="solution-card">
+          <div class="solution-icon">💼</div>
+          <div class="solution-num">01</div>
+          <h3 class="solution-title">北海道特化の転職情報</h3>
+          <p class="solution-body">北海道の求人に強いエージェントを厳選。年収アップ・リモートOKの求人を効率よく見つける方法を紹介します。</p>
+        </div>
+        <div class="solution-card">
+          <div class="solution-icon">💻</div>
+          <div class="solution-num">02</div>
+          <h3 class="solution-title">在宅でできる副業の始め方</h3>
+          <p class="solution-body">フリーランス・ライター・データ入力など、北海道にいながらスマホ・PCで始められる副業を具体的に解説します。</p>
+        </div>
+        <div class="solution-card">
+          <div class="solution-icon">📊</div>
+          <div class="solution-num">03</div>
+          <h3 class="solution-title">リアルな体験談と収益公開</h3>
+          <p class="solution-body">副業月5万円達成までの過程、失敗談も含めてリアルに公開。「自分にもできそう」と思えるロードマップを提示します。</p>
+        </div>
       </div>
-
-      <div class="service-card">
-        <span class="service-badge">正社員を目指すなら</span>
-        <h3>リクナビNEXT</h3>
-        <p class="desc">毎週2.6万件以上の新着求人が更新される転職サイト。グッドポイント診断で自分の強みを客観的に把握できる。</p>
-        <p class="point">北海道の正社員求人が豊富</p>
-        <p class="point">自己分析ツールが無料</p>
-        <a href="AFFILIATE_URL_RIKUNABI_NEXT" class="btn-service" rel="noopener noreferrer" target="_blank">無料で登録する →</a>
-      </div>
-
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ⑥ おすすめ副業サービス -->
-<section class="services-alt" id="side">
-  <div class="container">
-    <h2 class="section-title">おすすめ<span>副業サービス</span> 3選</h2>
-    <p class="section-sub">本業を続けながら始められる、リモート対応のサービスを厳選</p>
-    <div class="divider"></div>
-    <div class="service-grid">
-
-      <div class="service-card">
-        <span class="service-badge">在宅ワーク特化</span>
-        <h3>ママワークス</h3>
-        <p class="desc">在宅・リモートワーク専門の求人サイト。データ入力・事務・コールセンターなど、スキル不要で始めやすい案件が多い。</p>
-        <p class="point">完全在宅OKの案件が多数</p>
-        <p class="point">スキルなしでも始めやすい</p>
-        <a href="AFFILIATE_URL_MAMAWORKS" class="btn-service" rel="noopener noreferrer" target="_blank">無料で登録する →</a>
+  <!-- TRANSFER SERVICES -->
+  <section class="services-transfer" id="transfer">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-tag">TRANSFER</span>
+        <h2 class="section-title">おすすめ転職サービス</h2>
+        <p class="section-desc">北海道の求人に強く、無料で使えるサービスを厳選しました。登録は5分以内。</p>
       </div>
+      <div class="services-grid">
 
-      <div class="service-card">
-        <span class="service-badge">フリーランス向け</span>
-        <h3>Agent Kikkake</h3>
-        <p class="desc">IT・Web系フリーランスのエージェントサービス。リモート案件が中心で、北海道在住でも都市圏の高単価案件を獲得できる。</p>
-        <p class="point">リモート高単価案件に強い</p>
-        <p class="point">エージェントが案件交渉を代行</p>
-        <a href="AFFILIATE_URL_AGENT_KIKKAKE" class="btn-service" rel="noopener noreferrer" target="_blank">無料で相談する →</a>
+        <div class="service-card">
+          <span class="service-badge">業界最大手</span>
+          <h3 class="service-name">リクルートエージェント</h3>
+          <p class="service-desc">業界最多クラスの求人数を誇る転職エージェント。北海道の非公開求人も多数保有。キャリアアドバイザーが内定まで完全サポート。</p>
+          <div class="service-tags">
+            <span class="service-tag">求人数No.1</span>
+            <span class="service-tag">無料登録</span>
+            <span class="service-tag">北海道対応</span>
+            <span class="service-tag">非公開求人あり</span>
+          </div>
+          <a href="AFFILIATE_URL_RECRUIT" class="service-btn" target="_blank" rel="noopener noreferrer">
+            無料で登録する →
+          </a>
+        </div>
+
+        <div class="service-card">
+          <span class="service-badge">転職者満足度高</span>
+          <h3 class="service-name">doda</h3>
+          <p class="service-desc">転職者満足度の高いエージェント＆求人サービス。スカウト機能も充実しており、自分では見つけられなかった求人に出会える。</p>
+          <div class="service-tags">
+            <span class="service-tag">スカウトあり</span>
+            <span class="service-tag">無料登録</span>
+            <span class="service-tag">リモートOK求人多数</span>
+          </div>
+          <a href="AFFILIATE_URL_DODA" class="service-btn" target="_blank" rel="noopener noreferrer">
+            無料で登録する →
+          </a>
+        </div>
+
+        <div class="service-card">
+          <span class="service-badge">自分のペースで転職</span>
+          <h3 class="service-name">リクナビNEXT</h3>
+          <p class="service-desc">自分で求人を検索・応募できる転職サイト。エージェントに任せるのが不安な人や、まず求人を見たいだけの人にも最適。</p>
+          <div class="service-tags">
+            <span class="service-tag">自己応募型</span>
+            <span class="service-tag">無料登録</span>
+            <span class="service-tag">グッドポイント診断</span>
+          </div>
+          <a href="AFFILIATE_URL_RIKUNABI" class="service-btn" target="_blank" rel="noopener noreferrer">
+            無料で登録する →
+          </a>
+        </div>
+
       </div>
-
-      <div class="service-card">
-        <span class="service-badge">案件数 No.1</span>
-        <h3>クラウドワークス</h3>
-        <p class="desc">国内最大のクラウドソーシング。ライティング・デザイン・プログラミングなど多様な案件があり、スキルアップしながら稼げる。</p>
-        <p class="point">登録無料・今すぐ始められる</p>
-        <p class="point">未経験OKの案件も豊富</p>
-        <a href="AFFILIATE_URL_CROWDWORKS" class="btn-service" rel="noopener noreferrer" target="_blank">無料で始める →</a>
-      </div>
-
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ⑦ CTA -->
-<section class="cta-section">
-  <div class="container">
-    <h2>まず、一歩だけ踏み出してみませんか？</h2>
-    <p>悩んでいる時間が一番もったいない。<br>登録は全部無料。気になるサービスから試してみてください。</p>
-    <div class="cta-buttons">
-      <a href="https://x.com/hkd_fukugyo" class="btn-cta btn-cta-white" target="_blank" rel="noopener noreferrer">Xで最新情報を見る</a>
-      <a href="https://note.com/hkd_fukugyo" class="btn-cta btn-cta-outline" target="_blank" rel="noopener noreferrer">noteで詳しく読む</a>
+  <!-- SIDE JOB SERVICES -->
+  <section class="services-side" id="side">
+    <div class="section-inner">
+      <div class="section-header">
+        <span class="section-tag">SIDE JOB</span>
+        <h2 class="section-title">おすすめ副業サービス</h2>
+        <p class="section-desc">在宅・スキマ時間で始められる副業サービスを厳選。北海道からでも完全在宅でOK。</p>
+      </div>
+      <div class="services-grid">
+
+        <div class="service-card">
+          <span class="service-badge">在宅ワーク専門</span>
+          <h3 class="service-name">ママワークス</h3>
+          <p class="service-desc">在宅ワーク・テレワーク専門の求人サイト。副業・パートOKの案件も多く、スキマ時間を活用したい人に最適。</p>
+          <div class="service-tags">
+            <span class="service-tag">完全在宅</span>
+            <span class="service-tag">無料登録</span>
+            <span class="service-tag">副業OK案件多数</span>
+          </div>
+          <a href="AFFILIATE_URL_MAMAWORKS" class="service-btn" target="_blank" rel="noopener noreferrer">
+            無料で登録する →
+          </a>
+        </div>
+
+        <div class="service-card">
+          <span class="service-badge">フリーランス向け</span>
+          <h3 class="service-name">Agent Kikkake</h3>
+          <p class="service-desc">フリーランス・副業向けの案件紹介サービス。スキルを活かして副収入を得たいエンジニア・デザイナーにおすすめ。</p>
+          <div class="service-tags">
+            <span class="service-tag">リモート案件</span>
+            <span class="service-tag">無料登録</span>
+            <span class="service-tag">エンジニア向け</span>
+          </div>
+          <a href="AFFILIATE_URL_KIKKAKE" class="service-btn" target="_blank" rel="noopener noreferrer">
+            無料で登録する →
+          </a>
+        </div>
+
+        <div class="service-card">
+          <span class="service-badge">日本最大級クラウド</span>
+          <h3 class="service-name">クラウドワークス</h3>
+          <p class="service-desc">日本最大級のクラウドソーシングサービス。ライティング・データ入力・デザインなどスキル不問の案件も豊富。副業初心者にも最適。</p>
+          <div class="service-tags">
+            <span class="service-tag">初心者OK</span>
+            <span class="service-tag">無料登録</span>
+            <span class="service-tag">スキル不問案件あり</span>
+          </div>
+          <a href="AFFILIATE_URL_CROWDWORKS" class="service-btn" target="_blank" rel="noopener noreferrer">
+            無料で登録する →
+          </a>
+        </div>
+
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ⑧ フッター -->
-<footer>
-  <div class="logo">北海道副業ナビ</div>
-  <div class="links">
-    <a href="https://x.com/hkd_fukugyo" target="_blank" rel="noopener noreferrer">
-      <svg class="sns-icon" viewBox="0 0 24 24" fill="currentColor" aria-label="X（旧Twitter）">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
-      </svg>
-      X（旧Twitter）
-    </a>
-    <a href="https://note.com/hkd_fukugyo" target="_blank" rel="noopener noreferrer">
-      <svg class="sns-icon" viewBox="0 0 24 24" fill="currentColor" aria-label="note">
-        <path d="M3 3h18a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm9 4a5 5 0 1 0 0 10A5 5 0 0 0 12 7zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
-      </svg>
-      note
-    </a>
-  </div>
-  <p class="copy">© 2024 北海道副業ナビ All Rights Reserved.</p>
-</footer>
+  <!-- CTA -->
+  <section class="cta" id="cta">
+    <div class="section-inner">
+      <h2 class="cta-title">
+        まず一歩、踏み出してみませんか？<br>
+        登録は全て無料です。
+      </h2>
+      <p class="cta-sub">
+        北海道在住のぼくも、最初の一歩は不安でした。<br>
+        でも動いてみたら、選択肢はたくさんありました。<br>
+        あなたにも必ず合うサービスが見つかるはずです。
+      </p>
+      <div class="cta-btns">
+        <a href="#transfer" class="cta-btn-main">転職サービスを見る →</a>
+        <a href="#side" class="cta-btn-sub">副業サービスを見る →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-logo">北海道副業ナビ</div>
+          <p class="footer-tagline">
+            北海道在住の会社員が、副業・転職のリアルを発信。<br>
+            給料に不満がある北海道の20〜35歳へ、<br>具体的な一歩を提案します。
+          </p>
+          <div class="footer-social">
+            <a href="https://x.com/hkd_fukugyo" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="X (Twitter)">𝕏</a>
+            <a href="https://note.com/hkd_fukugyo" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="note">n</a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>転職サービス</h4>
+            <ul>
+              <li><a href="AFFILIATE_URL_RECRUIT" target="_blank" rel="noopener noreferrer">リクルートエージェント</a></li>
+              <li><a href="AFFILIATE_URL_DODA" target="_blank" rel="noopener noreferrer">doda</a></li>
+              <li><a href="AFFILIATE_URL_RIKUNABI" target="_blank" rel="noopener noreferrer">リクナビNEXT</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>副業サービス</h4>
+            <ul>
+              <li><a href="AFFILIATE_URL_MAMAWORKS" target="_blank" rel="noopener noreferrer">ママワークス</a></li>
+              <li><a href="AFFILIATE_URL_KIKKAKE" target="_blank" rel="noopener noreferrer">Agent Kikkake</a></li>
+              <li><a href="AFFILIATE_URL_CROWDWORKS" target="_blank" rel="noopener noreferrer">クラウドワークス</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>SNS・発信</h4>
+            <ul>
+              <li><a href="https://x.com/hkd_fukugyo" target="_blank" rel="noopener noreferrer">X（旧Twitter）</a></li>
+              <li><a href="https://note.com/hkd_fukugyo" target="_blank" rel="noopener noreferrer">note</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">© 2026 北海道副業ナビ. All rights reserved.</p>
+        <ul class="footer-legal">
+          <li><a href="#">プライバシーポリシー</a></li>
+          <li><a href="#">免責事項</a></li>
+          <li><a href="#">お問い合わせ</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
 
 </body>
 </html>
