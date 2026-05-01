@@ -35,4 +35,4 @@
 ## SNS情報
 - X：@hkd_fukugyo
 - note：note.com/hkd_fukugyo
-- Studio LP：salmon381207.studio.site
+- Studio LP：hkd-fukugyo.com

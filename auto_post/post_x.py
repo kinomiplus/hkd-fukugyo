@@ -64,11 +64,12 @@ def main() -> None:
     logger.info("内容:\n%s", full_post)
 
     if char_count > 140:
-        msg = f"文字数超過 ({char_count}文字)"
-        logger.warning("%s。スキップします。", msg)
-        from notify import notify_error
-        notify_error("post_x.py / 文字数チェック", msg)
-        sys.exit(1)
+        logger.warning("文字数超過 (%d文字)。trim_to_fit で調整します。", char_count)
+        from claude_generator import trim_to_fit
+        content, hashtags = trim_to_fit(content, hashtags, limit=140)
+        full_post = f"{content}\n{' '.join(hashtags)}"
+        char_count = len(full_post)
+        logger.info("調整後: %d文字", char_count)
 
     # Slack通知（投稿文生成完了）
     from config import TIME_SLOTS

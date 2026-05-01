@@ -1,6 +1,7 @@
 """Claude APIを使ってXポストとnote記事を生成する"""
 import re
 import json
+import hashlib
 import logging
 import datetime
 from pathlib import Path
@@ -15,53 +16,51 @@ from config import (
     TIME_SLOTS,
     HISTORY_FILE,
     LP_URL,
+    NOTE_PROFILE_URL,
 )
 
 logger = logging.getLogger(__name__)
 client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
 BUZZ_PATTERNS_FILE = Path(__file__).parent / "buzz_patterns.json"
+_LOG_DIR = Path(__file__).parent / "logs"
 
 # ─── 時間帯別詳細ガイダンス ───────────────────────────────────────
 _TIME_SLOT_DETAILS = {
     "07": {
         "persona": "通勤中・出勤前（スクロール速度が速い）",
-        "length_guide": "本文100〜110文字（ハッシュタグ含む全体で140文字以内）。一文一文を短く。",
+        "length_guide": "本文80〜100文字（ハッシュタグ込み140文字以内を厳守）。一文一文を短く。",
         "style": "驚き・数字・事実でフックをかける。結論を最初に書く。テンポよく。",
         "avoid": "長い説明・複雑な構造・重い話題",
     },
     "12": {
         "persona": "ランチタイム（リラックスした気分で読む）",
-        "length_guide": "本文100〜110文字（ハッシュタグ含む全体で140文字以内）。少し余裕のある構成OK。",
+        "length_guide": "本文80〜100文字（ハッシュタグ込み140文字以内を厳守）。少し余裕のある構成OK。",
         "style": "リスト形式・ステップ形式が読みやすい。有益情報・お役立ち系。",
         "avoid": "重い話・暗い内容・長すぎる説明",
     },
     "17": {
         "persona": "退勤・帰宅中（仕事への疲れや不満を感じている）",
-        "length_guide": "本文100〜110文字（ハッシュタグ含む全体で140文字以内）。感情を乗せる。",
+        "length_guide": "本文80〜100文字（ハッシュタグ込み140文字以内を厳守）。感情を乗せる。",
         "style": "共感・あるある・悩み・本音系が響く。「わかる」と思わせる。",
         "avoid": "数字ばかりの無機質な投稿・ノウハウ系の説教",
     },
     "20": {
         "persona": "帰宅後（ゆっくり読める時間・情報収集意欲が高い）",
-        "length_guide": "本文100〜110文字（ハッシュタグ含む全体で140文字以内）。詳しい説明OK。",
+        "length_guide": "本文80〜100文字（ハッシュタグ込み140文字以内を厳守）。詳しい説明OK。",
         "style": "ハウツー・ステップ系・知識・学びになる内容。深めでためになる。",
         "avoid": "浅い内容・結論だけの投稿",
     },
     "22": {
         "persona": "就寝前（前向きな気持ちで明日に備えたい）",
-        "length_guide": "本文100〜110文字（ハッシュタグ含む全体で140文字以内）。余韻を残す締め。",
+        "length_guide": "本文80〜100文字（ハッシュタグ込み140文字以内を厳守）。余韻を残す締め。",
         "style": "明日への動機づけ・小さな一歩・明日試せる具体的なこと。",
         "avoid": "複雑な情報・不安を煽る内容・重い話題",
     },
 }
 
-# ① Googleトレンド用 優先マッチキーワード
 _TREND_PRIORITY = ["副業", "転職", "北海道", "在宅", "フリーランス", "稼ぐ", "求人", "リモート", "副収入"]
 
-# ─── SEOキーワードリサーチ設定 ──────────────────────────────────
-
-# pytrends用シードキーワードグループ（5個以内／グループ）
 _SEO_SEED_GROUPS = {
     "副業": ["北海道 副業", "札幌 副業", "北海道 在宅ワーク", "北海道 副業 初心者", "北海道 副収入"],
     "転職": ["北海道 転職", "札幌 転職", "北海道 転職エージェント", "北海道 求人", "札幌 転職 おすすめ"],
@@ -70,7 +69,6 @@ _SEO_SEED_GROUPS = {
     "default": ["北海道 副業", "北海道 転職", "北海道 在宅ワーク", "北海道 稼ぐ方法", "北海道 副収入"],
 }
 
-# CTR最適化タイトルパターン
 _SEO_TITLE_PATTERNS = [
     "【{year}年最新】{keyword}おすすめ{num}選｜月{amount}円稼いだ体験談",
     "{keyword}の始め方【{num}ステップ完全ガイド】北海道在住者が解説",
@@ -79,20 +77,23 @@ _SEO_TITLE_PATTERNS = [
     "【保存版】{keyword}で稼ぐ{num}の方法｜北海道からでもできる副業",
 ]
 
-# ② ハッシュタグマスター（テーマ→候補リスト）
 _HASHTAG_MAP = {
     "副業":     ["#副業", "#副業初心者", "#副業で稼ぐ", "#副業おすすめ", "#在宅副業"],
     "転職":     ["#転職", "#転職活動", "#転職エージェント", "#転職希望", "#転職成功"],
     "北海道":   ["#北海道", "#北海道転職", "#北海道副業", "#北海道在住", "#札幌"],
     "在宅":     ["#在宅ワーク", "#リモートワーク", "#テレワーク", "#在宅勤務"],
     "稼ぐ":     ["#お金の話", "#収入アップ", "#月収公開", "#副収入"],
-    "ライター": ["#Webライター", "#ライター副業", "#クラウドワークス"],
+    "ライター": ["#Webライター", "#ライター副業", "#在宅ワーク"],
     "ポイ活":   ["#ポイ活", "#ポイント活動", "#節約"],
     "フリー":   ["#フリーランス", "#独立", "#個人事業主"],
     "会社員":   ["#会社員副業", "#サラリーマン副業", "#正社員副業"],
+    "投資":     ["#投資初心者", "#少額投資", "#NISA", "#株式投資"],
+    "FP":       ["#家計見直し", "#FP相談", "#家計管理"],
+    "回線":     ["#光回線", "#在宅ワーク環境", "#リモートワーク"],
+    "免許":     ["#運転免許", "#合宿免許", "#資格取得"],
+    "社内SE":   ["#社内SE", "#エンジニア転職", "#IT転職"],
 }
 
-# テーマ文字列 → 関連カテゴリのマッピング
 _THEME_TO_CATEGORY = {
     "副業": "副業",
     "転職": "転職",
@@ -105,16 +106,68 @@ _THEME_TO_CATEGORY = {
     "会社員": "会社員",
     "稼ぐ": "稼ぐ",
     "収入": "稼ぐ",
+    "投資": "投資",
+    "FP": "FP",
+    "家計": "FP",
+    "回線": "回線",
+    "免許": "免許",
+    "社内SE": "社内SE",
 }
+
+# ─── ログファイルから投稿履歴を取得 ──────────────────────────────
+
+_HOOK_RE = re.compile(
+    r"(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}),\d+ \[INFO\] 投稿生成完了: hook=(\w+), engagement_type=(\w+)"
+)
+_THEME_RE = re.compile(r"\[INFO\] テーマ: (.+)")
+
+
+def _get_log_history(days: int = 30) -> list[dict]:
+    """auto_post/logs/x_*.log から投稿データを取得（テーマ・フック・エンゲージメントタイプ）"""
+    cutoff = datetime.datetime.now() - datetime.timedelta(days=days)
+    entries = []
+
+    for log_file in sorted(_LOG_DIR.glob("x_*.log")):
+        try:
+            lines = log_file.read_text(encoding="utf-8").splitlines()
+        except Exception:
+            continue
+
+        for i, line in enumerate(lines):
+            hm = _HOOK_RE.match(line)
+            if not hm:
+                continue
+            try:
+                ts = datetime.datetime.strptime(hm.group(1), "%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                continue
+            if ts < cutoff:
+                continue
+
+            hook_id = hm.group(2)
+            eng_type = hm.group(3)
+
+            # 直後の最大6行以内でテーマを探す
+            theme = ""
+            for j in range(i + 1, min(i + 7, len(lines))):
+                tm = _THEME_RE.search(lines[j])
+                if tm:
+                    theme = tm.group(1).strip()
+                    break
+
+            entries.append({
+                "date": ts.isoformat(),
+                "theme": theme,
+                "hook_id": hook_id,
+                "engagement_type": eng_type,
+            })
+
+    return sorted(entries, key=lambda e: e["date"])
 
 
 # ─── SEOキーワードリサーチ ──────────────────────────────────────
 
 def get_seo_keywords(theme: str) -> dict:
-    """pytrendsでSEOキーワードリサーチを行い、ロングテールキーワードを返す。
-    Returns: {"primary": str, "longtail": [str], "related": [str], "scores": dict}
-    """
-    # テーマに合ったシードグループを選択
     seed_group = _SEO_SEED_GROUPS["default"]
     for key in ["副業", "転職", "在宅", "フリー"]:
         if key in theme:
@@ -124,8 +177,6 @@ def get_seo_keywords(theme: str) -> dict:
     try:
         from pytrends.request import TrendReq
         pytrends = TrendReq(hl="ja-JP", tz=540, timeout=(10, 25))
-
-        # 検索ボリューム比較（interest_over_time）
         pytrends.build_payload(seed_group[:5], cat=0, timeframe="today 3-m", geo="JP")
         interest_df = pytrends.interest_over_time()
 
@@ -136,7 +187,6 @@ def get_seo_keywords(theme: str) -> dict:
         else:
             ranked = [(kw, 50.0) for kw in seed_group]
 
-        # 上位キーワードの関連クエリ（ロングテール）を取得
         primary_kw = ranked[0][0] if ranked else seed_group[0]
         pytrends.build_payload([primary_kw], cat=0, timeframe="today 3-m", geo="JP")
         related = pytrends.related_queries()
@@ -164,21 +214,15 @@ def get_seo_keywords(theme: str) -> dict:
     except Exception as e:
         logger.warning("SEOキーワードリサーチ失敗: %s", e)
 
-    # フォールバック：シードグループをそのまま使用
     return {
         "primary": seed_group[0],
-        "longtail": [
-            f"{seed_group[0]} 始め方",
-            f"{seed_group[0]} おすすめ",
-            f"{seed_group[0]} 初心者",
-        ],
+        "longtail": [f"{seed_group[0]} 始め方", f"{seed_group[0]} おすすめ", f"{seed_group[0]} 初心者"],
         "related": seed_group[1:3],
         "scores": {},
     }
 
 
 def generate_meta_description(title: str, keywords: list[str], content_preview: str) -> str:
-    """SEO最適化メタディスクリプションを生成する（120文字以内）。"""
     kw_str = "・".join(keywords[:3])
     response = client.messages.create(
         model="claude-sonnet-4-6",
@@ -206,7 +250,6 @@ def generate_meta_description(title: str, keywords: list[str], content_preview: 
 
 
 def analyze_competitor_structure(keyword: str) -> str:
-    """指定キーワードで上位表示される記事の構成をClaude分析で返す。"""
     response = client.messages.create(
         model="claude-sonnet-4-6",
         max_tokens=600,
@@ -228,17 +271,14 @@ def analyze_competitor_structure(keyword: str) -> str:
     return response.content[0].text.strip()
 
 
-# ─── ① Googleトレンド取得 ────────────────────────────────────
+# ─── Googleトレンド取得 ────────────────────────────────────
 
 def get_google_trends() -> list[str]:
-    """日本のGoogleトレンドから副業・転職・北海道関連キーワードを取得する。
-    失敗時は空リストを返す。"""
     try:
         from pytrends.request import TrendReq
         pytrends = TrendReq(hl="ja-JP", tz=540, timeout=(10, 25))
         trending_df = pytrends.trending_searches(pn="japan")
         all_trends = trending_df[0].tolist()
-
         priority = [kw for kw in all_trends if any(p in kw for p in _TREND_PRIORITY)]
         others = [kw for kw in all_trends if kw not in priority]
         result = (priority + others)[:10]
@@ -252,7 +292,6 @@ def get_google_trends() -> list[str]:
 
 
 def get_related_trend_keywords(trends: list[str], theme: str) -> list[str]:
-    """トレンドリストからテーマに関連するキーワードだけ返す（最大3件）。"""
     if not trends:
         return []
     related = [kw for kw in trends if any(p in kw for p in _TREND_PRIORITY)]
@@ -263,9 +302,8 @@ def get_related_trend_keywords(trends: list[str], theme: str) -> list[str]:
     return related[:3]
 
 
-# ─── ② ハッシュタグ自動選定 ─────────────────────────────────
+# ─── ハッシュタグ自動選定 ─────────────────────────────────
 
-# トレンド失敗時のフォールバックリスト（検索ボリューム優先順）
 _FALLBACK_HASHTAGS = [
     "#副業", "#転職", "#在宅ワーク", "#北海道",
     "#副業初心者", "#転職活動", "#フリーランス",
@@ -273,13 +311,9 @@ _FALLBACK_HASHTAGS = [
 
 
 def select_hashtags(content: str, theme: str, trends: list[str], count: int = 3) -> list[str]:
-    """投稿内容・テーマ・トレンドからハッシュタグを最大3個選定して返す。
-    トレンド取得成功時は上位キーワードを使用。失敗時はローテーションで選定。
-    """
     selected: list[str] = []
 
     if trends:
-        # トレンド成功時：_TREND_PRIORITY に一致するキーワードをハッシュタグ化
         for kw in trends[:15]:
             for priority_kw in _TREND_PRIORITY:
                 if priority_kw in kw:
@@ -290,7 +324,6 @@ def select_hashtags(content: str, theme: str, trends: list[str], count: int = 3)
             if len(selected) >= count:
                 break
 
-    # 不足分を日時ベースのローテーションで補充
     if len(selected) < count:
         now = datetime.datetime.now()
         offset = (now.timetuple().tm_yday + now.hour) % len(_FALLBACK_HASHTAGS)
@@ -304,26 +337,61 @@ def select_hashtags(content: str, theme: str, trends: list[str], count: int = 3)
     return selected[:count]
 
 
+def trim_to_fit(content: str, hashtags: list[str], limit: int = 140) -> tuple[str, list[str]]:
+    """本文とハッシュタグを合わせて limit 文字以内に収める。
+    1. ハッシュタグを段階的に削減
+    2. それでも超える場合は本文を文末記号で自然に切る（URL途中では切らない）
+    """
+    if len(f"{content}\n{' '.join(hashtags)}") <= limit:
+        return content, hashtags
+
+    # ハッシュタグを段階的に削減
+    for n in range(len(hashtags) - 1, 0, -1):
+        reduced = hashtags[:n]
+        if len(f"{content}\n{' '.join(reduced)}") <= limit:
+            logger.info("ハッシュタグ%d個に削減して%d文字に収めた", n, len(f"{content}\n{' '.join(reduced)}"))
+            return content, reduced
+
+    # タグ1個でも超える場合は本文を削る
+    single_tag = hashtags[:1]
+    max_body = limit - len(f"\n{' '.join(single_tag)}")
+
+    if len(content) > max_body:
+        trimmed = content[:max_body]
+
+        # URLが途中で切れていないか確認（切れていたらURL前まで後退）
+        url_match = re.search(r"https?://\S*$", trimmed)
+        if url_match and url_match.start() >= int(max_body * 0.4):
+            trimmed = trimmed[:url_match.start()].rstrip(" 　→")
+        else:
+            # 末尾の自然な区切りで切る（70%以上残っていれば採用）
+            for punct in ["。", "！", "？", "✅", "🙌", "\n"]:
+                pos = trimmed.rfind(punct)
+                if pos >= int(max_body * 0.7):
+                    trimmed = trimmed[:pos + 1]
+                    break
+
+        logger.info("本文トリム: %d→%d文字", len(content), len(trimmed))
+        content = trimmed
+
+    return content, single_tag
+
+
 def append_hashtags(content: str, hashtags: list[str], total_limit: int = 140) -> str:
-    """本文末尾にハッシュタグを追記する。"""
-    tag_str = " ".join(hashtags)
-    combined = f"{content}\n{tag_str}"
-    if len(combined) > total_limit:
-        logger.warning("投稿文字数が%d文字を超えています（%d文字）", total_limit, len(combined))
-    return combined
+    """本文末尾にハッシュタグを追記。必ず total_limit 文字以内に収める。"""
+    content, adjusted_tags = trim_to_fit(content, hashtags, total_limit)
+    return f"{content}\n{' '.join(adjusted_tags)}"
 
 
-# ─── ③ 競合投稿パターン ──────────────────────────────────────
+# ─── バズパターン ──────────────────────────────────────
 
 def load_buzz_patterns() -> dict:
-    """buzz_patterns.jsonを読み込む。"""
     if BUZZ_PATTERNS_FILE.exists():
         return json.loads(BUZZ_PATTERNS_FILE.read_text(encoding="utf-8"))
-    return {"patterns": [], "buzz_keywords": []}
+    return {"patterns": [], "hooks": [], "buzz_keywords": []}
 
 
 def build_buzz_context(theme: str, engagement_type: str = "informational") -> str:
-    """テーマ・エンゲージメントタイプに合うバズパターンとキーワードをプロンプト用文字列に整形する。"""
     data = load_buzz_patterns()
     patterns = data.get("patterns", [])
     buzz_keywords = data.get("buzz_keywords", [])
@@ -336,7 +404,6 @@ def build_buzz_context(theme: str, engagement_type: str = "informational") -> st
             score += 1
         if any(tag in theme for tag in p.get("tags", [])):
             score += 3
-        # エンゲージメントタイプが一致する場合は優先
         if p.get("engagement_type") == engagement_type:
             score += 4
         return score
@@ -345,7 +412,7 @@ def build_buzz_context(theme: str, engagement_type: str = "informational") -> st
 
     lines = ["【バズりやすい投稿パターン（参考にする）】"]
     for p in top_patterns:
-        lines.append(f"▼{p['name']}: {p['example']}")
+        lines.append(f"▼{p['name']}: {p['example'][:80]}")
 
     lines.append("\n【バズるキーワード（積極的に使う）】")
     lines.append("・" + "　・".join(buzz_keywords[:6]))
@@ -354,58 +421,65 @@ def build_buzz_context(theme: str, engagement_type: str = "informational") -> st
 
 
 def select_hook(history: dict) -> dict:
-    """直近で使っていないフックを選んで返す。"""
+    """直近3日間で使ったフックを除外し、30日間で最も使用頻度が低いフックを選ぶ。"""
     data = load_buzz_patterns()
     hooks = data.get("hooks", [])
     if not hooks:
         return {"id": "honest", "text": "正直に言う。", "style": "本音系"}
 
-    # 直近30日に使ったhook_idを取得
-    cutoff = datetime.datetime.now() - datetime.timedelta(days=30)
-    recent_hook_ids = [
-        p.get("hook_id", "")
-        for p in history.get("x_posts", [])
-        if datetime.datetime.fromisoformat(p["date"]) > cutoff and p.get("hook_id")
-    ]
-
-    # 使用回数でランク付けし、最も少ないものを選ぶ
-    counts = {h["id"]: recent_hook_ids.count(h["id"]) for h in hooks}
-    min_count = min(counts.values(), default=0)
-    candidates = [h for h in hooks if counts[h["id"]] == min_count]
-
-    # 最後に使ったhook_idと被らないようにする
-    last_hook_id = recent_hook_ids[-1] if recent_hook_ids else ""
-    non_repeat = [h for h in candidates if h["id"] != last_hook_id]
-    return (non_repeat or candidates)[0]
-
-
-def get_weekly_engagement_stats(history: dict) -> dict:
-    """今週（月曜から）のエンゲージメントタイプ別投稿数を返す。"""
     now = datetime.datetime.now()
-    week_start = now - datetime.timedelta(days=now.weekday())
-    week_start = week_start.replace(hour=0, minute=0, second=0, microsecond=0)
+    cutoff_3d = now - datetime.timedelta(days=3)
+    cutoff_30d = now - datetime.timedelta(days=30)
 
-    stats = {"reply_prompt": 0, "quotable": 0, "informational": 0}
+    log_entries = _get_log_history(days=30)
+
+    # 直近3日に使ったフック（使用禁止）
+    recent_3d_hooks: set[str] = set()
+    for e in log_entries:
+        try:
+            if e["hook_id"] and datetime.datetime.fromisoformat(e["date"]) > cutoff_3d:
+                recent_3d_hooks.add(e["hook_id"])
+        except (ValueError, KeyError):
+            pass
     for p in history.get("x_posts", []):
-        post_date = datetime.datetime.fromisoformat(p["date"])
-        if post_date >= week_start:
-            etype = p.get("engagement_type", "informational")
-            stats[etype] = stats.get(etype, 0) + 1
-    return stats
+        try:
+            if datetime.datetime.fromisoformat(p["date"]) > cutoff_3d and p.get("hook_id"):
+                recent_3d_hooks.add(p["hook_id"])
+        except (ValueError, KeyError):
+            pass
 
+    # 直近30日の使用回数
+    counts: dict[str, int] = {}
+    for e in log_entries:
+        try:
+            if e["hook_id"] and datetime.datetime.fromisoformat(e["date"]) > cutoff_30d:
+                counts[e["hook_id"]] = counts.get(e["hook_id"], 0) + 1
+        except (ValueError, KeyError):
+            pass
+    for p in history.get("x_posts", []):
+        try:
+            if datetime.datetime.fromisoformat(p["date"]) > cutoff_30d and p.get("hook_id"):
+                counts[p["hook_id"]] = counts.get(p["hook_id"], 0) + 1
+        except (ValueError, KeyError):
+            pass
 
-def decide_engagement_type(history: dict) -> str:
-    """今週の投稿バランスを見て、次の投稿のエンゲージメントタイプを決定する。
-    - reply_prompt: 週2〜3本を目標
-    - quotable: 週1〜2本を目標
-    - informational: それ以外
-    """
-    stats = get_weekly_engagement_stats(history)
-    if stats["reply_prompt"] < 2:
-        return "reply_prompt"
-    if stats["quotable"] < 1:
-        return "quotable"
-    return "informational"
+    # 3日以内に使ったフックを除外
+    candidates = [h for h in hooks if h["id"] not in recent_3d_hooks]
+    if not candidates:
+        candidates = hooks  # 全部使い切っていたらリセット
+
+    # 使用回数が最少のものを優先
+    min_count = min(counts.get(h["id"], 0) for h in candidates)
+    least_used = [h for h in candidates if counts.get(h["id"], 0) == min_count]
+
+    # 最後に使ったhookとは被らせない
+    last_hook_ids = [e["hook_id"] for e in log_entries if e["hook_id"]]
+    last_hook_id = last_hook_ids[-1] if last_hook_ids else ""
+    non_repeat = [h for h in least_used if h["id"] != last_hook_id]
+
+    chosen = (non_repeat or least_used)[0]
+    logger.info("フック選定: %s（3日除外: %s）", chosen["id"], list(recent_3d_hooks))
+    return chosen
 
 
 # ─── 履歴管理 ────────────────────────────────────────────────
@@ -423,17 +497,92 @@ def save_history(history: dict) -> None:
     )
 
 
-def get_recent_x_themes(history: dict, days: int = 14) -> list:
+def get_recent_x_themes(history: dict, days: int = 14) -> list[str]:
+    """post_history.json とログファイルの両方から直近N日のテーマを取得。"""
     cutoff = datetime.datetime.now() - datetime.timedelta(days=days)
-    return [
+
+    # post_history.json から
+    history_themes = [
         p["theme"]
         for p in history.get("x_posts", [])
         if datetime.datetime.fromisoformat(p["date"]) > cutoff
     ]
 
+    # ログファイルから（履歴が空の場合も有効）
+    log_entries = _get_log_history(days=days)
+    log_themes = [e["theme"] for e in log_entries if e["theme"]]
 
-def get_recent_note_titles(history: dict) -> list:
+    # 順序を保ちつつ重複除去
+    seen: set[str] = set()
+    all_themes: list[str] = []
+    for t in history_themes + log_themes:
+        if t not in seen:
+            seen.add(t)
+            all_themes.append(t)
+
+    logger.info("直近%d日の使用テーマ: %d種（history=%d, log=%d）",
+                days, len(all_themes), len(history_themes), len(log_themes))
+    return all_themes
+
+
+def get_recent_note_titles(history: dict) -> list[str]:
     return [a["title"] for a in history.get("note_articles", [])[-10:]]
+
+
+def get_weekly_engagement_stats(history: dict) -> dict:
+    now = datetime.datetime.now()
+    week_start = now - datetime.timedelta(days=now.weekday())
+    week_start = week_start.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    stats: dict[str, int] = {
+        "reply_prompt": 0, "quotable": 0, "informational": 0,
+        "lp_cta": 0, "note_cta": 0,
+    }
+    for p in history.get("x_posts", []):
+        try:
+            post_date = datetime.datetime.fromisoformat(p["date"])
+            if post_date >= week_start:
+                etype = p.get("engagement_type", "informational")
+                stats[etype] = stats.get(etype, 0) + 1
+        except (ValueError, KeyError):
+            pass
+    return stats
+
+
+def decide_engagement_type(history: dict) -> str:
+    """今週の投稿バランスを見て次のエンゲージメントタイプを決定。
+    週間目標: lp_cta 1〜2本 / note_cta 1本 / reply_prompt 2〜3本 / quotable 1〜2本
+    """
+    stats = get_weekly_engagement_stats(history)
+
+    # ログからも今週の統計を補完
+    log_entries = _get_log_history(days=7)
+    now = datetime.datetime.now()
+    week_start = (now - datetime.timedelta(days=now.weekday())).replace(
+        hour=0, minute=0, second=0, microsecond=0
+    )
+    for e in log_entries:
+        try:
+            if datetime.datetime.fromisoformat(e["date"]) >= week_start and e.get("engagement_type"):
+                et = e["engagement_type"]
+                stats[et] = stats.get(et, 0) + 1
+        except (ValueError, KeyError):
+            pass
+
+    logger.info("今週のエンゲージメント統計: %s", stats)
+
+    # 優先度順に決定（LP・note誘導を週2〜3本確保）
+    if stats.get("lp_cta", 0) < 1:
+        return "lp_cta"
+    if stats.get("reply_prompt", 0) < 2:
+        return "reply_prompt"
+    if stats.get("note_cta", 0) < 1:
+        return "note_cta"
+    if stats.get("quotable", 0) < 1:
+        return "quotable"
+    if stats.get("lp_cta", 0) < 2:
+        return "lp_cta"
+    return "informational"
 
 
 def record_x_post(
@@ -468,32 +617,39 @@ def record_note_article(history: dict, title: str, url: str = "") -> None:
 # ─── コンテンツ生成 ───────────────────────────────────────────
 
 def generate_x_post(time_hour: str) -> dict:
-    """指定時間帯のX投稿を1本生成して返す。
-    {"theme": ..., "content": ..., "hashtags": [...], "full_post": ...,
-     "hook_id": ..., "engagement_type": ...}
-    """
+    """指定時間帯のX投稿を1本生成して返す。文字数は必ず140文字以内。"""
     history = load_history()
-    recent_themes = get_recent_x_themes(history)
 
+    # ① 直近14日のテーマ（ログ+履歴）を除外
+    recent_themes = get_recent_x_themes(history, days=14)
     available = [t for t in X_THEMES if t not in recent_themes]
     if not available:
+        logger.info("全テーマを14日以内に使用済。リセット。")
         available = X_THEMES[:]
 
-    # ① トレンド取得
-    trends = get_google_trends()
-    trend_keywords = get_related_trend_keywords(trends, available[0])
+    # ② 日時ベースのシードでテーマリストをローテーション（同じ日時は同じ順序を保証）
+    today_key = datetime.datetime.now().strftime("%Y%m%d") + time_hour
+    seed = int(hashlib.md5(today_key.encode()).hexdigest()[:8], 16)
+    offset = seed % len(available)
+    rotated = available[offset:] + available[:offset]
+    available_for_prompt = rotated[:10]  # 10テーマを提示（6→10に拡大）
+    default_theme = available_for_prompt[0]
 
-    # ② エンゲージメントタイプ・フック決定
+    # ③ トレンド取得
+    trends = get_google_trends()
+    trend_keywords = get_related_trend_keywords(trends, default_theme)
+
+    # ④ エンゲージメントタイプ・フック決定
     engagement_type = decide_engagement_type(history)
     hook = select_hook(history)
 
     time_desc = TIME_SLOTS.get(time_hour, "")
     slot_detail = _TIME_SLOT_DETAILS.get(time_hour, {})
-    available_str = "\n".join(f"・{t}" for t in available[:6])
-    recent_str = ("・" + "\n・".join(recent_themes)) if recent_themes else "なし"
+    available_str = "\n".join(f"・{t}" for t in available_for_prompt)
+    recent_str = ("・" + "\n・".join(recent_themes[:10])) if recent_themes else "なし"
     trend_str = "・" + "\n・".join(trend_keywords) if trend_keywords else "なし"
 
-    # ③ エンゲージメントタイプ別の追加指示
+    # ⑤ エンゲージメントタイプ別の追加指示
     engagement_guide = {
         "reply_prompt": (
             "【今回の投稿タイプ：返信促進型】\n"
@@ -511,15 +667,31 @@ def generate_x_post(time_hour: str) -> dict:
             "・数字・事実・具体例で読者の学びになる内容にする\n"
             "・北海道特化の情報を積極的に盛り込む"
         ),
+        "lp_cta": (
+            "【今回の投稿タイプ：LP誘導型】\n"
+            f"・URLが「{LP_URL}」（32文字）入るため、本文は【最大65文字】で生成すること\n"
+            "・副業や転職に関心を持った読者をLPへ自然に誘導する\n"
+            "・体験談（数字入り）を書き、最後にLPのURLを全文で記載する\n"
+            f"・最終行に必ず「詳しくはこちら → {LP_URL}」を入れる\n"
+            "・宣伝感を出さず「まとめた」「公開中」など柔らかく表現する"
+        ),
+        "note_cta": (
+            "【今回の投稿タイプ：note誘導型】\n"
+            f"・URLが「{NOTE_PROFILE_URL}」（約30文字）入るため、本文は【最大65文字】で生成すること\n"
+            "・副業や転職の具体的な情報に関心を持った読者をnoteへ誘導する\n"
+            "・teaser型：興味を持たせて「続きはnote」と引っ張る\n"
+            f"・最終行に必ず「続きはnoteで → {NOTE_PROFILE_URL}」を入れる\n"
+            "・宣伝感を出さず体験談→note誘導の自然な流れで書く"
+        ),
     }.get(engagement_type, "")
 
-    # ④ バズパターン取得（エンゲージメントタイプを考慮）
-    buzz_context = build_buzz_context(available[0], engagement_type)
+    # ⑥ バズパターン取得
+    buzz_context = build_buzz_context(default_theme, engagement_type)
 
-    # ⑤ 時間帯詳細ガイダンス
+    # ⑦ 時間帯詳細ガイダンス
     time_guide = (
         f"【{time_hour}時の読者プロフィール】{slot_detail.get('persona', time_desc)}\n"
-        f"【文字数の目安】{slot_detail.get('length_guide', '100〜140文字')}\n"
+        f"【文字数の目安】{slot_detail.get('length_guide', '80〜100文字')}\n"
         f"【文体・スタイル】{slot_detail.get('style', '')}\n"
         f"【避けること】{slot_detail.get('avoid', '')}"
     )
@@ -539,25 +711,27 @@ def generate_x_post(time_hour: str) -> dict:
                 "role": "user",
                 "content": (
                     f"今から{time_hour}時向けのX投稿を1本作成してください。\n\n"
-                    f"【最近使ったテーマ（重複禁止）】\n{recent_str}\n\n"
+                    f"【最近使ったテーマ（絶対に重複禁止）】\n{recent_str}\n\n"
                     f"【使えるテーマ候補（この中から1つ選ぶ）】\n{available_str}\n\n"
                     f"【今日のトレンドキーワード（自然に盛り込む）】\n{trend_str}\n\n"
                     f"{time_guide}\n\n"
                     f"{engagement_guide}\n\n"
                     f"【今回のフック（最初の一文に使う）】\n「{hook['text']}」（{hook['style']}）\n\n"
                     f"{buzz_context}\n\n"
-                    "【必須ルール】\n"
-                    "・本文は100〜110文字で生成する（ハッシュタグは別途追加されるため含めない）\n"
+                    "【必須ルール（絶対に守ること）】\n"
+                    "・本文は【最大100文字】で生成する\n"
+                    "  ※ ハッシュタグが別途30〜40文字追加される。本文100文字以下にしないと140文字を超える\n"
+                    "  ※ 文字数は必ず自分でカウントして確認してから出力すること\n"
                     "・文章は必ず完結した形で終わる。「…」で切らない\n"
                     "・数字・具体例を必ず含める\n"
                     "・北海道特化ネタを優先\n"
-                    "・絵文字は2〜3個まで\n"
+                    "・絵文字は1〜2個まで\n"
                     "・宣伝臭は出さない\n"
                     "・バズパターンを1つ参考にして書く\n"
                     "・フックの文から始める（そのままでもアレンジしてもOK）\n\n"
                     "以下の形式のみで出力（余計な説明不要）:\n"
                     "THEME: 選んだテーマ\n"
-                    "POST: 投稿本文"
+                    "POST: 投稿本文（100文字以内・ハッシュタグなし）"
                 ),
             }
         ],
@@ -569,10 +743,10 @@ def generate_x_post(time_hour: str) -> dict:
     theme_match = re.search(r"^THEME:\s*(.+)", text, re.MULTILINE)
     post_match = re.search(r"^POST:\s*(.+)", text, re.MULTILINE | re.DOTALL)
 
-    theme = theme_match.group(1).strip() if theme_match else available[0]
+    theme = theme_match.group(1).strip() if theme_match else default_theme
     content = post_match.group(1).strip() if post_match else text.split("\n")[-1]
 
-    # ⑥ ハッシュタグ選定・追記
+    # ⑧ ハッシュタグ選定・追記（trim_to_fit で必ず140字以内に収める）
     hashtags = select_hashtags(content, theme, trends)
     full_post = append_hashtags(content, hashtags)
 
@@ -594,9 +768,7 @@ def generate_x_post(time_hour: str) -> dict:
 
 
 def generate_note_article() -> dict:
-    """note記事を1本生成して返す。
-    Returns: {"title": ..., "content": ..., "meta_description": ..., "seo_keywords": dict}
-    """
+    """note記事を1本生成して返す。"""
     history = load_history()
     recent_titles = get_recent_note_titles(history)
 
@@ -608,19 +780,16 @@ def generate_note_article() -> dict:
     recent_str = ("・" + "\n・".join(recent_titles)) if recent_titles else "なし"
     current_year = datetime.datetime.now().year
 
-    # ① SEOキーワードリサーチ
     seo = get_seo_keywords(theme)
     primary_kw = seo["primary"]
     longtail_kws = seo["longtail"]
     all_seo_kws = [primary_kw] + longtail_kws[:3]
     seo_kw_str = "・" + "\n・".join(all_seo_kws)
 
-    # ② トレンドを記事に組み込む
     trends = get_google_trends()
     trend_keywords = get_related_trend_keywords(trends, theme)
     trend_str = "・" + "\n・".join(trend_keywords) if trend_keywords else "なし"
 
-    # ③ 競合分析
     competitor_analysis = analyze_competitor_structure(primary_kw)
 
     response = client.messages.create(
@@ -676,7 +845,6 @@ def generate_note_article() -> dict:
     title = title_match.group(1).strip() if title_match else theme
     content = text[sep_index + 3:].strip() if sep_index != -1 else text
 
-    # ⑥ メタディスクリプション生成
     meta_desc = generate_meta_description(title, all_seo_kws, content[:200])
 
     logger.info("SEOキーワード(primary): %s", primary_kw)

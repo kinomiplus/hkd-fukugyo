@@ -14,6 +14,8 @@ X_ACCESS_TOKEN = os.getenv("X_ACCESS_TOKEN", "")
 X_ACCESS_TOKEN_SECRET = os.getenv("X_ACCESS_TOKEN_SECRET", "")
 NOTE_EMAIL = os.getenv("NOTE_EMAIL", "")
 NOTE_PASSWORD = os.getenv("NOTE_PASSWORD", "")
+NOTE_CREATOR_URLNAME = os.getenv("NOTE_CREATOR_URLNAME", "hkd_fukugyo")
+NOTE_PROFILE_URL = f"https://note.com/{NOTE_CREATOR_URLNAME}"
 SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL", "")
 
 # --- Google Sheets ---
@@ -75,12 +77,17 @@ X_THEMES = [
     "副業の確定申告の基礎知識",
     "転職活動を始めるべきタイミング",
     "ポイ活で月1万円稼ぐ具体的な方法",
-    "クラウドワークスで最初の1万円",
+    "ママワークスで最初の1万円",
     "北海道でリモートワークできる会社の探し方",
     "副業と本業を両立するコツ",
     "転職の志望動機の書き方",
     "フリーランスになる前に知っておくこと",
     "北海道在住が使うべき転職サイト比較",
+    "副業を始める前にFPに無料相談したら家計が月3万浮いた話",
+    "副業の最初の1万円を投資に回したら何が変わるか",
+    "在宅副業で稼ぐなら回線速度が命な理由",
+    "北海道で運転免許を合宿で取った体験談",
+    "社内SE転職で残業ゼロになった北海道在住エンジニアの話",
 ]
 
 # --- note記事テーマ一覧 ---
@@ -100,4 +107,4 @@ NOTE_THEMES = [
 ]
 
 # Studio LP URL
-LP_URL = "https://salmon381207.studio.site"
+LP_URL = "https://hkd-fukugyo.com"

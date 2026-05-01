@@ -4,10 +4,13 @@
       "id": "before_after",
       "name": "ビフォーアフター型",
       "template": "〇ヶ月前：{before}\n今：{after}\n\nやったこと：{action}だけ",
-      "example": "3ヶ月前：副業月収0円\n今：副業月収4.8万円\n\nやったこと：クラウドワークスで毎日1件応募しただけ",
+      "example": "3ヶ月前：副業月収0円\n今：副業月収4.8万円\n\nやったこと：ママワークスで毎日1件応募しただけ",
       "engagement": "high",
       "engagement_type": "informational",
-      "tags": ["副業", "実績"]
+      "tags": [
+        "副業",
+        "実績"
+      ]
     },
     {
       "id": "reality_gap",
@@ -16,16 +19,23 @@
       "example": "みんな知らないけど、「副業は難しい」は嘘。正直に言うと最初の1万円が一番ハードル高いだけ。北海道だからこそ在宅副業の需要が意外と高い。",
       "engagement": "high",
       "engagement_type": "informational",
-      "tags": ["副業", "本音"]
+      "tags": [
+        "副業",
+        "本音"
+      ]
     },
     {
       "id": "number_list",
       "name": "数字リスト型",
       "template": "北海道で{goal}するために使ったサービス{n}選\n\n{list}\n\n全部無料で登録できる",
-      "example": "北海道で転職するために使ったサービス3選\n\n①リクルートエージェント\n②doda\n③リクナビNEXT\n\n全部無料で登録できる",
+      "example": "北海道在住サラリーマンが本当に使ってよかったサービス3選\n\n①FPカフェ（家計の見直し）\n②ママワークス（在宅副業）\n③社内SE転職ナビ（本業の見直し）\n\n全部無料で始められる",
       "engagement": "high",
       "engagement_type": "informational",
-      "tags": ["転職", "リスト", "無料"]
+      "tags": [
+        "転職",
+        "リスト",
+        "無料"
+      ]
     },
     {
       "id": "story_hook",
@@ -34,7 +44,11 @@
       "example": "正直に告白します。\n\n副業を始めて最初の2ヶ月は1円も稼げなかった。\n\nでもある方法を変えてから月3万円になった。",
       "engagement": "very_high",
       "engagement_type": "informational",
-      "tags": ["副業", "体験談", "共感"]
+      "tags": [
+        "副業",
+        "体験談",
+        "共感"
+      ]
     },
     {
       "id": "myth_bust",
@@ -43,16 +57,23 @@
       "example": "「とりあえず転職サイトに登録」はやめた方がいい。\n\n理由：求人多すぎて迷うだけ。\n\n代わりに転職エージェント1社に絞る方が3倍速い。",
       "engagement": "high",
       "engagement_type": "informational",
-      "tags": ["転職", "アドバイス"]
+      "tags": [
+        "転職",
+        "アドバイス"
+      ]
     },
     {
       "id": "specific_result",
       "name": "具体的実績型",
       "template": "{period}で{specific_result}できた方法を公開。\n\n・{step1}\n・{step2}\n・{step3}\n\n全部ぼくが実際にやったこと。",
-      "example": "3ヶ月で副業月5万円できた方法を公開。\n\n・クラウドワークスで毎日1件応募\n・得意な作業に絞る\n・単価交渉を絶対やる\n\n全部ぼくが実際にやったこと。",
+      "example": "3ヶ月で副業月5万円できた方法を公開。\n\n・ママワークスで毎日1件応募\n・得意な作業に絞る\n・単価交渉を絶対やる\n\n全部ぼくが実際にやったこと。",
       "engagement": "very_high",
       "engagement_type": "informational",
-      "tags": ["副業", "実績", "具体的"]
+      "tags": [
+        "副業",
+        "実績",
+        "具体的"
+      ]
     },
     {
       "id": "warning",
@@ -61,16 +82,24 @@
       "example": "北海道で転職を考えてる人へ。\n\n焦って決めることだけは気をつけて。\n\nぼくは最初の転職を急いで年収が逆に下がった。",
       "engagement": "high",
       "engagement_type": "informational",
-      "tags": ["転職", "注意", "体験談"]
+      "tags": [
+        "転職",
+        "注意",
+        "体験談"
+      ]
     },
     {
       "id": "question_answer",
       "name": "Q&A型",
       "template": "Q：{question}\n\nA：{answer}\n\n{supporting_detail}",
-      "example": "Q：副業って何から始めればいい？\n\nA：まずクラウドワークスに登録するだけ。\n\n登録5分、最初の仕事獲得まで平均2週間。",
+      "example": "Q：副業って何から始めればいい？\n\nA：まずママワークスに登録するだけ。\n\n登録5分、最初の仕事獲得まで平均2週間。",
       "engagement": "medium",
       "engagement_type": "informational",
-      "tags": ["副業", "初心者", "Q&A"]
+      "tags": [
+        "副業",
+        "初心者",
+        "Q&A"
+      ]
     },
     {
       "id": "reply_question",
@@ -79,7 +108,11 @@
       "example": "副業を始めたきっかけって何でしたか？\n\nぼくは手取り21万円で将来が不安になったのがきっかけだった。\n\nあなたはどうですか？コメントで教えてほしい。",
       "engagement": "very_high",
       "engagement_type": "reply_prompt",
-      "tags": ["共感", "問いかけ", "エンゲージメント"]
+      "tags": [
+        "共感",
+        "問いかけ",
+        "エンゲージメント"
+      ]
     },
     {
       "id": "hokkaido_special",
@@ -88,7 +121,11 @@
       "example": "北海道在住だからこそ言える。\n\n道外の転職エージェントは北海道求人が全体の3%しかない。\n\n北海道専門エージェントを使うだけで選択肢が4倍になる。",
       "engagement": "high",
       "engagement_type": "informational",
-      "tags": ["北海道", "転職", "具体的"]
+      "tags": [
+        "北海道",
+        "転職",
+        "具体的"
+      ]
     },
     {
       "id": "comparison",
@@ -97,16 +134,24 @@
       "example": "転職エージェントvsスカウト型、どっちがいい？\n\n【エージェント】プロが選んでくれる・書類通過率高い\n【スカウト型】企業側から来る・受け身でOK\n\nぼくはエージェントを選んだ理由→最初の転職は手厚いサポートが必要だから",
       "engagement": "high",
       "engagement_type": "informational",
-      "tags": ["転職", "副業", "比較"]
+      "tags": [
+        "転職",
+        "副業",
+        "比較"
+      ]
     },
     {
       "id": "quotable",
       "name": "引用RT型",
       "template": "「{memorable_statement}」\n\n{supporting_fact}\n\nこれだけ覚えておけばOK。",
-      "example": "「副業の最初の1万円は、技術じゃなく行動量で決まる」\n\n実際、クラウドワークスで50件応募した人の9割は最初の案件を獲れてる。\n\nこれだけ覚えておけばOK。",
+      "example": "「副業の最初の1万円は、技術じゃなく行動量で決まる」\n\n実際、ママワークスで50件応募した人の9割は最初の案件を獲れてる。\n\nこれだけ覚えておけばOK。",
       "engagement": "very_high",
       "engagement_type": "quotable",
-      "tags": ["副業", "名言", "学び"]
+      "tags": [
+        "副業",
+        "名言",
+        "学び"
+      ]
     },
     {
       "id": "step_reveal",
@@ -115,7 +160,11 @@
       "example": "転職エージェント登録から内定まで3ステップ\n\nStep1：エージェント2社に同時登録\nStep2：担当者と面談→求人選定\nStep3：書類→面接→内定\n\n早い人は1ヶ月あればできる。",
       "engagement": "high",
       "engagement_type": "informational",
-      "tags": ["転職", "副業", "ステップ"]
+      "tags": [
+        "転職",
+        "副業",
+        "ステップ"
+      ]
     },
     {
       "id": "income_reveal",
@@ -124,7 +173,11 @@
       "example": "【月収公開】副業収入：68,000円\n\n内訳：\n・Webライター：43,000円\n・アフィリエイト：25,000円\n\n6ヶ月前は0円だった。",
       "engagement": "very_high",
       "engagement_type": "informational",
-      "tags": ["副業", "月収", "実績"]
+      "tags": [
+        "副業",
+        "月収",
+        "実績"
+      ]
     },
     {
       "id": "local_job_market",
@@ -133,7 +186,37 @@
       "example": "北海道のIT転職の現実、正直に言う。\n\n・全国比で求人数は約1/8\n・でもリモートOKなら全国応募できる\n\nだから「勤務地条件を外す」が正解。",
       "engagement": "high",
       "engagement_type": "informational",
-      "tags": ["北海道", "転職", "求人"]
+      "tags": [
+        "北海道",
+        "転職",
+        "求人"
+      ]
+    },
+    {
+      "id": "lp_cta",
+      "name": "LP誘導型",
+      "template": "{valuable_info}\n\nロードマップ全部まとめた → {lp_url}",
+      "example": "北海道在住サラリーマンが副業で月5万稼ぐまでにやったこと、全部まとめた。在宅副業から転職・投資まで、体験談ベースで公開中。\n\n詳しくはこちら → https://hkd-fukugyo.com",
+      "engagement": "high",
+      "engagement_type": "lp_cta",
+      "tags": [
+        "副業",
+        "転職",
+        "LP誘導"
+      ]
+    },
+    {
+      "id": "note_cta",
+      "name": "note誘導型",
+      "template": "{teaser}。\n\n続きはnoteに書いた → {note_url}",
+      "example": "副業で最初の1万円を稼ぐまでに試した方法を全部まとめた。失敗談も含めてリアルに書いたから参考になるはず。\n\n続きはnoteで → https://note.com/hkd_fukugyo",
+      "engagement": "high",
+      "engagement_type": "note_cta",
+      "tags": [
+        "副業",
+        "note誘導",
+        "体験談"
+      ]
     }
   ],
   "hooks": [
@@ -196,6 +279,31 @@
       "id": "credibility",
       "text": "副業で月5万稼いでわかったこと。",
       "style": "実績による信頼"
+    },
+    {
+      "id": "number_start",
+      "text": "月〇万円稼いで気づいた。",
+      "style": "実績数字系"
+    },
+    {
+      "id": "empathy_start",
+      "text": "わかる、その気持ち。",
+      "style": "共感フック"
+    },
+    {
+      "id": "challenge_start",
+      "text": "1週間だけ試してみてほしい。",
+      "style": "行動促進"
+    },
+    {
+      "id": "local_fact",
+      "text": "北海道の現実を数字で話す。",
+      "style": "ローカル事実提示"
+    },
+    {
+      "id": "before_discovery",
+      "text": "これを知る前と後で、全然違う。",
+      "style": "気づき転換"
     }
   ],
   "buzz_keywords": [
