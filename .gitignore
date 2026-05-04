@@ -56,3 +56,10 @@ node_modules/
 .pytest_cache/
 .coverage
 htmlcov/
+
+# ====================================
+# 機密情報を含むファイル
+# ====================================
+PROJECT_STATUS.md
+a8_links/
+note_paid_article.md
