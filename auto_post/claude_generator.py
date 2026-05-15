@@ -729,6 +729,14 @@ def generate_x_post(time_hour: str) -> dict:
                     "・宣伝臭は出さない\n"
                     "・バズパターンを1つ参考にして書く\n"
                     "・フックの文から始める（そのままでもアレンジしてもOK）\n\n"
+                    "【人間らしさのルール（最重要）】\n"
+                    "・AI感・教科書感を絶対に出さない\n"
+                    "・完璧な文章より友人へのLINEみたいな自然さを優先\n"
+                    "・失敗談・本音・迷い・愚痴を積極的に入れる\n"
+                    "・北海道在住だからこそわかるというフレーズは使わない\n"
+                    "・だべは多用しない（1投稿に1回まで）\n"
+                    "・毎回同じような締め方をしない\n"
+                    "・たまに弱音・不安・葛藤を見せる\n\n"
                     "以下の形式のみで出力（余計な説明不要）:\n"
                     "THEME: 選んだテーマ\n"
                     "POST: 投稿本文（100文字以内・ハッシュタグなし）"
@@ -769,63 +777,14 @@ def generate_x_post(time_hour: str) -> dict:
 
 def generate_note_article() -> dict:
     """note記事を1本生成して返す。"""
-    import random
     history = load_history()
     recent_titles = get_recent_note_titles(history)
 
-    # ジャンル重複判定：テーマと過去タイトルから「ジャンル」を抽出して比較
-    def extract_genre(text: str) -> set[str]:
-        """タイトルやテーマからジャンルキーワードを抽出"""
-        genre_keywords = {
-            "副業月5万": ["副業で月5万", "副業月5万", "副業 月5万", "5万円稼"],
-            "副業始め方": ["副業 始め方", "副業の始め方", "副業を始め", "副業初心者", "副業 初心者"],
-            "在宅副業": ["在宅副業", "在宅ワーク", "在宅で稼"],
-            "ロードマップ": ["ロードマップ", "完全ガイド", "全手順", "ステップ"],
-            "転職一般": ["転職活動", "転職市場", "転職エージェント", "転職して年収"],
-            "社内SE転職": ["社内SE", "社内エンジニア"],
-            "ハイクラス転職": ["ハイクラス", "年収 上げ", "年収アップ", "年収100万", "年収200万"],
-            "リモート求人": ["リモートワーク", "リモート求人", "リモート可"],
-            "投資": ["投資", "NISA", "米国株", "少額投資"],
-            "FP相談": ["FP", "家計見直し", "家計が"],
-            "光回線": ["回線速度", "光回線", "auひかり"],
-            "免許": ["運転免許", "合宿免許"],
-            "ライター": ["Webライター", "ライターで月"],
-            "ポイ活": ["ポイ活", "アンケート"],
-            "フリーランス": ["フリーランス"],
-            "資格": ["資格", "持ってると得"],
-            "本業vs副業": ["本業の年収", "副業より本業"],
-        }
-        found = set()
-        for genre, keywords in genre_keywords.items():
-            for kw in keywords:
-                if kw in text:
-                    found.add(genre)
-                    break
-        return found
-
-    def is_recently_used(theme: str, recent: list[str]) -> bool:
-        theme_genres = extract_genre(theme)
-        if not theme_genres:
-            return False  # ジャンル判定できないテーマは使用OK
-        for title in recent:
-            title_genres = extract_genre(title)
-            # 同じジャンルが1つでも被っていたら使用済み扱い
-            if theme_genres & title_genres:
-                return True
-        return False
-
-    available = [t for t in NOTE_THEMES if not is_recently_used(t, recent_titles)]
+    available = [t for t in NOTE_THEMES if t not in recent_titles]
     if not available:
-        [logger.info](http://logger.info)("全テーマが直近で使用済。リセット。")
         available = NOTE_THEMES[:]
 
-    # 日時ベースのシードでランダム選択（同じ日に2回呼ばれても同じテーマになる）
-    import datetime, hashlib
-    today_key = [datetime.datetime.now](http://datetime.datetime.now)().strftime("%Y%m%d")
-    seed = int(hashlib.md5(today_key.encode()).hexdigest()[:8], 16)
-    rng = random.Random(seed)
-    theme = rng.choice(available)
-    [logger.info](http://logger.info)("テーマ選定: %s（候補数: %d）", theme, len(available))
+    theme = available[0]
     recent_str = ("・" + "\n・".join(recent_titles)) if recent_titles else "なし"
     current_year = datetime.datetime.now().year
 

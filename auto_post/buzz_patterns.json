@@ -217,6 +217,71 @@
         "note誘導",
         "体験談"
       ]
+    },
+    {
+      "id": "honest_struggle",
+      "name": "本音・葛藤型",
+      "template": "{struggle}\n\nでも{reason}から続ける。\n\n{small_progress}",
+      "example": "副業始めて1ヶ月、フォロワー45人。\n投稿は毎日してる。全然増えない。\n\nでも諦めたら確実にゼロだから続ける。\n\n今月初めて1件いいねが知らない人から来た。",
+      "engagement": "very_high",
+      "engagement_type": "reply_prompt",
+      "tags": [
+        "本音",
+        "共感",
+        "継続"
+      ]
+    },
+    {
+      "id": "failure_learning",
+      "name": "失敗告白型",
+      "template": "正直に言う。{failure}だった。\n\n理由は{reason}。\n\n今は{current}。",
+      "example": "正直に言う。副業最初の3ヶ月、時給120円だった。\n\nスキル不要の仕事ばかり選んでたから。\n\n今は案件を選ぶようになって時給が10倍になった。",
+      "engagement": "very_high",
+      "engagement_type": "informational",
+      "tags": [
+        "失敗",
+        "本音",
+        "体験談"
+      ]
+    },
+    {
+      "id": "daily_reality",
+      "name": "日常リアル型",
+      "template": "今日{daily_event}。\n\n{feeling}。\n\n{insight}",
+      "example": "今日も仕事終わりに求人見てた。\n\n正直しんどい。でも見るたびに相場感がわかってくる。\n\n転職って準備が9割だと思い始めてる。",
+      "engagement": "high",
+      "engagement_type": "reply_prompt",
+      "tags": [
+        "日常",
+        "本音",
+        "共感"
+      ]
+    },
+    {
+      "id": "small_win",
+      "name": "小さな進歩型",
+      "template": "小さい話だけど{small_win}。\n\n{context}\n\n{message}",
+      "example": "小さい話だけど今月初めてアフィリ報酬が入った。1,200円。\n\n半年かかった。時給換算したら笑えない金額。\n\nでもゼロじゃなくなった。これが全ての始まりだと思ってる。",
+      "engagement": "very_high",
+      "engagement_type": "quotable",
+      "tags": [
+        "進歩",
+        "体験談",
+        "共感"
+      ]
+    },
+    {
+      "id": "unpopular_truth",
+      "name": "不都合な真実型",
+      "template": "言いにくいけど{unpopular_truth}。\n\n{evidence}\n\n{advice}",
+      "example": "言いにくいけど副業で月5万稼ぐのに最低1年はかかる。\n\n3ヶ月で稼げてる人の多くは元から発信実績がある人。\n\nゼロからなら1年覚悟した方が続けられる。",
+      "engagement": "high",
+      "engagement_type": "informational",
+      "tags": [
+        "本音",
+        "現実",
+        "アドバイス"
+      ]
     }
   ],
   "hooks": [
